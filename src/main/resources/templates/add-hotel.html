@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Hotel - Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            height: 100vh;
+            background-color: #343a40;
+        }
+        .sidebar .nav-link {
+            color: #fff;
+            padding: 0.5rem 1rem;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #495057;
+        }
+        .sidebar .nav-link.active {
+            background-color: #007bff;
+        }
+        .main-content {
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-home me-2"></i>
+                            Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-box me-2"></i>
+                            Package
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="fas fa-hotel me-2"></i>
+                            Hotel
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-users me-2"></i>
+                            All Customers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-suitcase me-2"></i>
+                            Booking Package
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-concierge-bell me-2"></i>
+                            Booking Hotel
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Add New Hotel</h1>
+            </div>
+
+            <form class="needs-validation" novalidate th:action="@{/addHotel}" method="post" th:object="${hotelDto}" enctype="multipart/form-data">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="hotelName" class="form-label">Hotel Name</label>
+                        <input type="text" class="form-control" th:field="*{hotelName}" id="hotelName" required>
+                        <div class="invalid-feedback">
+                            Please enter the hotel name.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="city" class="form-label">City</label>
+                        <input type="text" class="form-control" th:field="*{city}" id="city" required>
+                        <div class="invalid-feedback">
+                            Please enter the city.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="state" class="form-label">State</label>
+                        <input type="text" class="form-control" th:field="*{state}" id="state" required>
+                        <div class="invalid-feedback">
+                            Please enter the state.
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="foodCost" class="form-label">Food Cost per Day</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" th:field="*{foodCost}" id="foodCost" required min="0" step="0.01">
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a valid food cost.
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="acRoomCost" class="form-label">AC Room Cost per Day</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" th:field="*{acRoomCost}" id="acRoomCost" required min="0" step="0.01">
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a valid AC room cost.
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="nonAcRoomCost" class="form-label">Non-AC Room Cost per Day</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" th:field="*{roomCost}" id="nonAcRoomCost" required min="0" step="0.01">
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a valid non-AC room cost.
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="hotelImage" class="form-label">Hotel Image</label>
+                        <input type="file" class="form-control" name="image" id="hotelImage" accept="image/*" required>
+                        <div class="invalid-feedback">
+                            Please select an image for the hotel.
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <button class="btn btn-primary btn-lg" type="submit">Add Hotel</button>
+            </form>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+</body>
+</html>
