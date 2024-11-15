@@ -82,4 +82,9 @@ public class PageController {
         return "admin-home";
     }
 
+    @GetMapping("/home")
+    public String home(){
+        return "home";
+    }
+
 }
