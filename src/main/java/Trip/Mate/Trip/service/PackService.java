@@ -56,7 +56,7 @@ public class PackService {
     }
 
     @Transactional
-    public Package updatePackage(int id, PackageDto packageDto) throws IOException {
+    public void updatePackage(int id, PackageDto packageDto) throws IOException {
 
         Package existingPackage = packRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Package with ID " + id + " not found"));
@@ -78,10 +78,15 @@ public class PackService {
             existingPackage.setImageUrl("/packageImages/" + fileName);
         }
 
-        return packRepo.save(existingPackage);
+        packRepo.save(existingPackage);
     }
 
     public void deleteById(int id){
         packRepo.deleteById(id);
+    }
+
+    public List<Package> searchPackages(String place,String name) {
+
+        return packRepo.findByCityContainingIgnoreCaseOrPackName(place,name);
     }
 }

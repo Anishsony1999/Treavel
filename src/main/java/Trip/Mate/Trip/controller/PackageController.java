@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+
 
 import java.io.IOException;
 import java.util.List;
@@ -43,6 +43,12 @@ public class PackageController {
     public ResponseEntity<Package> getPackageById(@PathVariable int id) {
         Optional<Package> pack = Optional.ofNullable(packService.packById(id));
         return pack.map(ResponseEntity::ok).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Package>> searchPackages(@RequestParam(required = false) String place,@RequestParam(required = false) String name) {
+        List<Package> filteredPackages = packService.searchPackages(place,name);
+        return new ResponseEntity<>(filteredPackages, HttpStatus.OK);
     }
 
     // Update package by ID

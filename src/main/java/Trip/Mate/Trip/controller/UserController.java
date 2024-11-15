@@ -2,6 +2,7 @@ package Trip.Mate.Trip.controller;
 
 import Trip.Mate.Trip.model.User;
 import Trip.Mate.Trip.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,8 +63,8 @@ public class UserController {
 
     // Verify user by email and password
     @PostMapping("/verify")
-    public ResponseEntity<User> verifyUser(@RequestParam String email, @RequestParam String pass) {
-        User user = userService.verifyUser(email, pass);
+    public ResponseEntity<User> verifyUser(@RequestParam String email, @RequestParam String pass, HttpServletResponse response) {
+        User user = userService.verifyUser(email, pass,response);
         if (user != null) {
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {

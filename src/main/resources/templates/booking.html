@@ -1,10 +1,123 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Package Details </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-image {
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
 </head>
 <body>
-$END$
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="/">Suffix E Solutions Booking</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/#packages">Packages</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/#hotels">Hotels</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/#bookings">My Bookings</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<header class="hero-image" th:style="'background-image: url(' + ${package.imageUrl} + ');'">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <h1 class="text-white text-center" th:text="${package.packName}">Package Name</h1>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container my-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <h2 th:text="${package.packName}">Package Name</h2>
+            <p class="lead" th:text="${package.description}">Package description goes here.</p>
+            <div class="mb-4">
+                <h3>Package Details</h3>
+                <ul>
+                    <li><strong>Location:</strong> <span th:text="${package.city + ', ' + package.state}">City, State</span></li>
+                    <li><strong>Duration:</strong> <span th:text="${package.days + ' Days / ' + package.night + ' Nights'}">Duration</span></li>
+                    <li><strong>Price per Person:</strong> <span th:text="'$' + ${#numbers.formatDecimal(package.pricePerPerson, 0, 'COMMA', 2, 'POINT')}">Price</span></li>
+                </ul>
+            </div>
+            <div class="mb-4">
+                <h3>Itinerary</h3>
+                <p>Detailed itinerary information would go here.</p>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Book This Package</h3>
+                    <form th:action="@{/packBook}" method="post" id="bookingForm">
+                        <input type="hidden" name="package_id" th:value="${package.id}">
+                        <input type="hidden" name="packageName" th:value="${package.packName}">
+                        <input type="hidden" name="packagePrice" th:value="${package.pricePerPerson}">
+
+                        <div class="mb-3">
+                            <label for="customerName" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="customerName" name="customerName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="totalPerson" class="form-label">Number of Travelers</label>
+                            <input type="number" class="form-control" id="totalPerson" name="totalPerson" min="1" value="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="travelDate" class="form-label">Travel Date</label>
+                            <input type="date" class="form-control" id="travelDate" name="travelDate" required>
+                        </div>
+                        <input type="hidden" name="totalPrice" id="totalPrice" th:value="${package.pricePerPerson}">
+                        <div class="mb-3">
+                            <p>Total Price: $<span id="displayTotalPrice" th:text="${#numbers.formatDecimal(package.pricePerPerson, 0, 'COMMA', 2, 'POINT')}">0.00</span></p>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-secondary" onclick="calculatePrice()">Check Price</button>
+                            <button type="submit" class="btn btn-primary">Book Now</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<script th:inline="javascript">
+    function calculatePrice() {
+        const totalPerson = document.getElementById('totalPerson').value;
+        const packagePrice = [[${package.pricePerPerson}]];
+        const totalPrice = totalPerson * packagePrice;
+        document.getElementById('totalPrice').value = totalPrice;
+        document.getElementById('displayTotalPrice').textContent = totalPrice.toFixed(2);
+    }
+
+    document.getElementById('totalPerson').addEventListener('change', calculatePrice);
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

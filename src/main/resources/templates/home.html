@@ -1,10 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background-image: url("/luca-bravo-O453M2Liufs-unsplash.jpg");
+            background-size: cover;
+            background-position: center;
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #007bff;
+        }
+        .search-box {
+            background: rgba(255,255,255,0.95);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .card {
+            transition: transform 0.3s;
+            height: 100%;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+        .location-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.9);
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+        .loading-spinner {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-$END$
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">Suffix E Solutions Booking</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#packages">Packages</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#hotels">Hotels</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#bookings">My Bookings</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<header class="hero-section">
+    <div class="container">
+        <h1>Welcome to Suffix E Solutions Booking</h1>
+        <p class="lead">Discover amazing destinations and book your dream vacation today!</p>
+        <div class="search-box mt-4">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" id="searchDestination" placeholder="Destination" aria-label="Search destination">
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="searchDuration" aria-label="Select duration">
+                        <option value="1-3">1-3 Days</option>
+                        <option value="4-7">4-7 Days</option>
+                        <option value="8+">8+ Days</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-primary w-100" onclick="searchPackages()">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container my-5">
+    <section class="row mb-5">
+        <div class="col-md-4 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-suitcase feature-icon"></i>
+                    <h5 class="card-title">Travel Packages</h5>
+                    <p class="card-text">Explore our curated travel packages for unforgettable experiences.</p>
+                    <a href="#packages" class="btn btn-primary">View Packages</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-hotel feature-icon"></i>
+                    <h5 class="card-title">Hotel Bookings</h5>
+                    <p class="card-text">Find and book the perfect accommodation for your stay.</p>
+                    <a href="#hotels" class="btn btn-primary">Search Hotels</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-user-circle feature-icon"></i>
+                    <h5 class="card-title">My Bookings</h5>
+                    <p class="card-text">View and manage your booked hotels and packages.</p>
+                    <a href="#bookings" class="btn btn-primary">My Bookings</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="packages" class="mb-5">
+        <h2 class="text-center mb-4">Featured Packages</h2>
+        <div id="loadingSpinner" class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        <div class="row g-4" id="packagesContainer">
+            <!-- Packages will be dynamically inserted here -->
+        </div>
+    </section>
+
+    <section id="hotels" class="mb-5">
+        <h2 class="text-center mb-4">Featured Hotels</h2>
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <img src="/placeholder.svg?height=200&width=300" alt="Luxury Hotel" class="img-fluid rounded">
+                <h5 class="mt-2">Luxury Hotel, Paris</h5>
+            </div>
+            <div class="col-md-3 mb-4">
+                <img src="/placeholder.svg?height=200&width=300" alt="Beach Resort" class="img-fluid rounded">
+                <h5 class="mt-2">Beach Resort, Bali</h5>
+            </div>
+            <div class="col-md-3 mb-4">
+                <img src="/placeholder.svg?height=200&width=300" alt="City Center Hotel" class="img-fluid rounded">
+                <h5 class="mt-2">City Center Hotel, New York</h5>
+            </div>
+            <div class="col-md-3 mb-4">
+                <img src="/placeholder.svg?height=200&width=300" alt="Mountain Lodge" class="img-fluid rounded">
+                <h5 class="mt-2">Mountain Lodge, Switzerland</h5>
+            </div>
+        </div>
+    </section>
+
+    <section id="bookings" class="mb-5">
+        <h2 class="text-center mb-4">My Bookings</h2>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Booked Packages</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Mystic Mountain Retreat - Aspen, Colorado</li>
+                            <li class="list-group-item">Coastal Paradise - Miami, Florida</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Booked Hotels</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Luxury Hotel - Paris, France</li>
+                            <li class="list-group-item">Beach Resort - Bali, Indonesia</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+
+<script>
+    // Sample data
+    const tourPackages = [
+        {
+            id: 1,
+            packName: "Mystic Mountain Retreat",
+            description: "Experience the serene beauty of mountain landscapes with this amazing tour package.",
+            city: "Aspen",
+            state: "Colorado",
+            days: 5,
+            night: 4,
+            pricePerPerson: 1299.99,
+            imageUrl: "/placeholder.svg?height=600&width=800"
+        },
+        {
+            id: 2,
+            packName: "Coastal Paradise",
+            description: "Enjoy the sun, sand, and surf in this spectacular beach getaway.",
+            city: "Miami",
+            state: "Florida",
+            days: 7,
+            night: 6,
+            pricePerPerson: 1599.99,
+            imageUrl: "/placeholder.svg?height=600&width=800"
+        },
+        {
+            id: 3,
+            packName: "Desert Adventure",
+            description: "Explore the magical desert landscapes and experience unique adventures.",
+            city: "Phoenix",
+            state: "Arizona",
+            days: 4,
+            night: 3,
+            pricePerPerson: 899.99,
+            imageUrl: "/placeholder.svg?height=600&width=800"
+        }
+    ];
+
+    // Function to display the packages
+    function displayPackages(packages) {
+    const container = document.getElementById('packagesContainer');
+    container.innerHTML = ''; // Clear previous content
+    packages.forEach(pkg => {
+        const card = document.createElement('div');
+        card.classList.add('col-md-4');
+        card.innerHTML = `
+            <div class="card">
+                <img src="${pkg.imageUrl}" class="card-img-top" alt="${pkg.packName}">
+                <span class="location-badge">
+                    <i class="fas fa-map-marker-alt"></i> ${pkg.city}, ${pkg.state}
+                </span>
+                <div class="card-body">
+                    <h5 class="card-title">${pkg.packName}</h5>
+                    <p class="card-text">${pkg.description}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-clock"></i> ${pkg.days}D/${pkg.night}N
+                        </div>
+                        <div class="text-primary fw-bold">
+                            $${pkg.pricePerPerson.toLocaleString()}
+                        </div>
+                    </div>
+                    <a href="/book/${pkg.id}" class="btn btn-outline-primary w-100 mt-3">View Details</a>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+
+    // Function to handle package search
+    function searchPackages() {
+        const destination = document.getElementById('searchDestination').value;
+        const duration = document.getElementById('searchDuration').value;
+
+        document.getElementById('loadingSpinner').style.display = 'block';
+
+
+        fetch(`/api/packages?destination=${destination}&duration=${duration}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loadingSpinner').style.display = 'none';
+                if (data && data.length > 0) {
+                    displayPackages(data);
+                } else {
+                    document.getElementById('packagesContainer').innerHTML = `
+                        <div class="col-12 text-center text-muted">No packages found for your search criteria.</div>
+                    `;
+                }
+            })
+            .catch(error => {
+                document.getElementById('loadingSpinner').style.display = 'none';
+                console.error('Error fetching packages:', error);
+                alert('There was an error fetching the packages.');
+            });
+    }
+
+    // Initial display with dummy data
+    displayPackages(tourPackages);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -2,6 +2,8 @@ package Trip.Mate.Trip.service;
 
 import Trip.Mate.Trip.model.User;
 import Trip.Mate.Trip.repo.UserRepo;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +24,18 @@ public class UserService {
         userRepo.save(user);
     }
 
-    public User verifyUser(String email, String pass) {
-        return userRepo.findByEmailAndPassword(email, pass);
+    public User verifyUser(String email, String pass, HttpServletResponse response) {
+        User user = userRepo.findByEmailAndPassword(email, pass);
+        if(user != null){
+            Cookie cookie = new Cookie("email", email);
+            cookie.setMaxAge(60 * 60);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+            cookie.setPath("/");
+
+            response.addCookie(cookie);
+        }
+        return user;
     }
 
     public Optional<User> getUserById(int id) {

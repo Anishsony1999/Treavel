@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,5 +68,16 @@ public class HotelController {
         } catch (RuntimeException e) {
             return new ResponseEntity<>("Hotel not found", HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Hotel>> searchHotels(
+            @RequestParam(required = false) String place,
+            @RequestParam(required = false) BigDecimal minRoomCost,
+            @RequestParam(required = false) BigDecimal maxRoomCost,
+            @RequestParam(required = false) BigDecimal maxFoodCost) {
+
+        List<Hotel> filteredHotels = hotelService.searchHotels(place, minRoomCost, maxRoomCost, maxFoodCost);
+        return new ResponseEntity<>(filteredHotels, HttpStatus.OK);
     }
 }

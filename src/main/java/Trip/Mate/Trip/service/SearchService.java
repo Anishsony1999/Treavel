@@ -34,9 +34,7 @@ public class SearchService {
         );
 
         // Search packages
-        List<Package> packages = packageRepo.findByCityContainingIgnoreCaseOrPackNameContainingIgnoreCaseAndDaysBetweenAndPricePerPersonLessThanEqual(
-                place, place, minDays, maxDays, maxBudget
-        );
+        List<Package> packages = packageRepo.findByCityContainingIgnoreCaseOrPackName(place,place);
 
         // Combine results
         SearchDto result = new SearchDto();

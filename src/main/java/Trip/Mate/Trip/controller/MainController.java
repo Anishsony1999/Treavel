@@ -2,30 +2,31 @@ package Trip.Mate.Trip.controller;
 
 import Trip.Mate.Trip.dto.HotelDto;
 import Trip.Mate.Trip.dto.PackageDto;
-import Trip.Mate.Trip.model.Hotel;
 import Trip.Mate.Trip.model.User;
 import Trip.Mate.Trip.service.HotelService;
+import Trip.Mate.Trip.service.PackBookingService;
 import Trip.Mate.Trip.service.PackService;
 import Trip.Mate.Trip.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 
 
 @Controller
 @RequiredArgsConstructor
-public class PageController {
+public class MainController {
 
     private final  UserService userService;
     private final HotelService hotelService;
     private final PackService packService;
+    private final PackBookingService bookingService;
 
     @GetMapping("/login")
     public String login(){
@@ -33,9 +34,9 @@ public class PageController {
     }
 
     @PostMapping("/login")
-    public String UserLogin(@RequestParam("username") String email,@RequestParam("password") String pass){
+    public String UserLogin(@RequestParam("username") String email, @RequestParam("password") String pass, HttpServletResponse response){
         System.out.println(email + pass);
-        User user = userService.verifyUser(email, pass);
+        User user = userService.verifyUser(email, pass,response);
         if(user != null) return "redirect:admin-home";
         return "redirect:register";
     }
@@ -84,6 +85,24 @@ public class PageController {
 
     @GetMapping("/home")
     public String home(){
+        return "home";
+    }
+
+    @GetMapping("/book/{id}")
+    public String bookingPage(@PathVariable("id") int id, Model model){
+        model.addAttribute("package",packService.packById(id));
+        return "booking";
+    }
+
+    @PostMapping("/packBook")
+    public String packBooking(
+            @RequestParam("package_id") int pId,
+            @RequestParam("totalPerson") int count,
+            @RequestParam("travelDate")
+            @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+            @CookieValue(value = "email",required = false) String email) {
+
+        bookingService.savePack(pId, count, date,email);
         return "home";
     }
 

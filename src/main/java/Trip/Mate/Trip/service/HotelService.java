@@ -82,4 +82,14 @@ public class HotelService {
         }
         hotelRepo.deleteById(id);
     }
+
+    public List<Hotel> searchHotels(String place, BigDecimal minRoomCost, BigDecimal maxRoomCost, BigDecimal maxFoodCost) {
+        if (minRoomCost == null) minRoomCost = BigDecimal.ZERO;
+        if (maxRoomCost == null) maxRoomCost = BigDecimal.valueOf(Double.MAX_VALUE);
+        if (maxFoodCost == null) maxFoodCost = BigDecimal.valueOf(Double.MAX_VALUE);
+
+        return hotelRepo.findByCityContainingIgnoreCaseOrHotelNameContainingIgnoreCaseAndRoomCostBetweenAndFoodCostLessThanEqual(
+                place, place, minRoomCost, maxRoomCost, maxFoodCost
+        );
+    }
 }
