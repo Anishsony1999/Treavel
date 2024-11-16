@@ -115,4 +115,22 @@ public class MainController {
         return "home";
     }
 
+    @GetMapping("/packageList")
+    public String packageList(Model model){
+        model.addAttribute("pack",packService.allPack());
+        return "packages";
+    }
+
+    @GetMapping("/hotelsList")
+    private String hotelsList(Model model){
+        model.addAttribute("hotel",hotelService.getAllHotels());
+        return "hotels";
+    }
+
+    @GetMapping("/allUsers")
+    public String users(Model model){
+        model.addAttribute("users",userService.allDetails());
+        return "allUsers";
+    }
+
 }
