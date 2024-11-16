@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -77,16 +77,6 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">Dashboard</h1>
-                <!-- <div class="btn-toolbar mb-2 mb-md-0">
-                    <div class="btn-group me-2">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-                    </div>
-                    <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                        <i class="fas fa-calendar-alt"></i>
-                        This week
-                    </button>
-                </div> -->
             </div>
 
             <!-- Dashboard content -->
@@ -95,7 +85,7 @@
                     <div class="card text-white bg-primary">
                         <div class="card-body">
                             <h5 class="card-title">Total Packages</h5>
-                            <p class="card-text display-4">150</p>
+                            <p class="card-text display-4" th:text="${totalPackages}">0</p>
                         </div>
                     </div>
                 </div>
@@ -103,7 +93,7 @@
                     <div class="card text-white bg-success">
                         <div class="card-body">
                             <h5 class="card-title">Total Hotels</h5>
-                            <p class="card-text display-4">75</p>
+                            <p class="card-text display-4" th:text="${totalHotels}">0</p>
                         </div>
                     </div>
                 </div>
@@ -111,63 +101,11 @@
                     <div class="card text-white bg-info">
                         <div class="card-body">
                             <h5 class="card-title">Total Customers</h5>
-                            <p class="card-text display-4">1,250</p>
+                            <p class="card-text display-4" th:text="${totalCustomers}">0</p>
                         </div>
                     </div>
                 </div>
             </div>
-
-<!--            <h2>Recent Bookings</h2>-->
-<!--            <div class="table-responsive">-->
-<!--                <table class="table table-striped table-sm">-->
-<!--                    <thead>-->
-<!--                    <tr>-->
-<!--                        <th>ID</th>-->
-<!--                        <th>Customer</th>-->
-<!--                        <th>Type</th>-->
-<!--                        <th>Date</th>-->
-<!--                        <th>Status</th>-->
-<!--                    </tr>-->
-<!--                    </thead>-->
-<!--                    <tbody>-->
-<!--                    <tr>-->
-<!--                        <td>1001</td>-->
-<!--                        <td>John Doe</td>-->
-<!--                        <td>Package</td>-->
-<!--                        <td>2023-05-15</td>-->
-<!--                        <td><span class="badge bg-success">Confirmed</span></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>1002</td>-->
-<!--                        <td>Jane Smith</td>-->
-<!--                        <td>Hotel</td>-->
-<!--                        <td>2023-05-16</td>-->
-<!--                        <td><span class="badge bg-warning">Pending</span></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>1003</td>-->
-<!--                        <td>Bob Johnson</td>-->
-<!--                        <td>Package</td>-->
-<!--                        <td>2023-05-17</td>-->
-<!--                        <td><span class="badge bg-info">Processing</span></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>1004</td>-->
-<!--                        <td>Alice Brown</td>-->
-<!--                        <td>Hotel</td>-->
-<!--                        <td>2023-05-18</td>-->
-<!--                        <td><span class="badge bg-success">Confirmed</span></td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>1005</td>-->
-<!--                        <td>Charlie Davis</td>-->
-<!--                        <td>Package</td>-->
-<!--                        <td>2023-05-19</td>-->
-<!--                        <td><span class="badge bg-danger">Cancelled</span></td>-->
-<!--                    </tr>-->
-<!--                    </tbody>-->
-<!--                </table>-->
-<!--            </div>-->
         </main>
     </div>
 </div>

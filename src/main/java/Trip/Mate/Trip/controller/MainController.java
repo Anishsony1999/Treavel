@@ -2,6 +2,8 @@ package Trip.Mate.Trip.controller;
 
 import Trip.Mate.Trip.dto.HotelDto;
 import Trip.Mate.Trip.dto.PackageDto;
+import Trip.Mate.Trip.model.Hotel;
+import Trip.Mate.Trip.model.Package;
 import Trip.Mate.Trip.model.User;
 import Trip.Mate.Trip.service.HotelService;
 import Trip.Mate.Trip.service.PackBookingService;
@@ -17,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 
 @Controller
@@ -85,10 +88,17 @@ public class MainController {
     }
 
     @GetMapping("/admin-home")
-    public String adminPage(@CookieValue(value = "role",required = false) String role){
-        if (role != null)
+    public String adminPage(@CookieValue(value = "role",required = false) String role,Model model){
+        if (role != null){
+            List<Package> packages = packService.allPack();
+            List<Hotel> hotels = hotelService.getAllHotels();
+            List<User> users = userService.allDetails();
+
+            model.addAttribute("totalPackages", packages.size());
+            model.addAttribute("totalHotels", hotels.size());
+            model.addAttribute("totalCustomers", users.size());
             return "admin-home";
-        else
+        } else
             return "redirect:login";
     }
 
