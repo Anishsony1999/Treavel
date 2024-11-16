@@ -122,7 +122,7 @@
             </div>
         </div>
     </section>
-    <div class="search-box mt-4">
+    <div class="search-box mt-4 mb-3">
         <div class="row g-3">
             <div class="col-md-4">
                 <input type="text" class="form-control" id="searchDestination" placeholder="Destination" aria-label="Search destination">
@@ -150,6 +150,9 @@
 
     <section id="hotels" class="mb-5">
         <h2 class="text-center mb-4">Featured Hotels</h2>
+        <div class="row g-4" id="hotelsContainer">
+            <!-- Packages will be dynamically inserted here -->
+        </div>
         <div class="row">
             <div class="col-md-3 mb-4">
                 <img src="/placeholder.svg?height=200&width=300" alt="Luxury Hotel" class="img-fluid rounded">
@@ -170,7 +173,7 @@
         </div>
     </section>
 
-    <section id="bookings" class="mb-5">
+    <!-- <section id="bookings" class="mb-5">
         <h2 class="text-center mb-4">My Bookings</h2>
         <div class="row">
             <div class="col-md-6 mb-4">
@@ -196,50 +199,50 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 </main>
 
 
 <script>
     // Sample data
-    const tourPackages = [
-        {
-            id: 1,
-            packName: "Mystic Mountain Retreat",
-            description: "Experience the serene beauty of mountain landscapes with this amazing tour package.",
-            city: "Aspen",
-            state: "Colorado",
-            days: 5,
-            night: 4,
-            pricePerPerson: 1299.99,
-            imageUrl: "/placeholder.svg?height=600&width=800"
-        },
-        {
-            id: 2,
-            packName: "Coastal Paradise",
-            description: "Enjoy the sun, sand, and surf in this spectacular beach getaway.",
-            city: "Miami",
-            state: "Florida",
-            days: 7,
-            night: 6,
-            pricePerPerson: 1599.99,
-            imageUrl: "/placeholder.svg?height=600&width=800"
-        },
-        {
-            id: 3,
-            packName: "Desert Adventure",
-            description: "Explore the magical desert landscapes and experience unique adventures.",
-            city: "Phoenix",
-            state: "Arizona",
-            days: 4,
-            night: 3,
-            pricePerPerson: 899.99,
-            imageUrl: "/placeholder.svg?height=600&width=800"
-        }
-    ];
+const tourPackages = [
+    {
+        id: 1,
+        packName: "Mystic Mountain Retreat",
+        description: "Experience the serene beauty of mountain landscapes with this amazing tour package.",
+        city: "Aspen",
+        state: "Colorado",
+        days: 5,
+        night: 4,
+        pricePerPerson: 1299.99,
+        imageUrl: "/placeholder.svg?height=600&width=800"
+    },
+    {
+        id: 2,
+        packName: "Coastal Paradise",
+        description: "Enjoy the sun, sand, and surf in this spectacular beach getaway.",
+        city: "Miami",
+        state: "Florida",
+        days: 7,
+        night: 6,
+        pricePerPerson: 1599.99,
+        imageUrl: "/placeholder.svg?height=600&width=800"
+    },
+    {
+        id: 3,
+        packName: "Desert Adventure",
+        description: "Explore the magical desert landscapes and experience unique adventures.",
+        city: "Phoenix",
+        state: "Arizona",
+        days: 4,
+        night: 3,
+        pricePerPerson: 899.99,
+        imageUrl: "/placeholder.svg?height=600&width=800"
+    }
+];
 
-    // Function to display the packages
-    function displayPackages(packages) {
+// Function to display the packages
+function displayPackages(packages) {
     const container = document.getElementById('packagesContainer');
     container.innerHTML = ''; // Clear previous content
     packages.forEach(pkg => {
@@ -270,35 +273,63 @@
     });
 }
 
+// Function to display the hotels
+function displayHotels(hotels) {
+    const container = document.getElementById('hotelsContainer');
+    container.innerHTML = ''; // Clear previous content
+    hotels.forEach(hotel => {
+        const card = document.createElement('div');
+        card.classList.add('col-md-4');
+        card.innerHTML = `
+            <div class="card">
+                <img src="${hotel.imgUrl}" class="card-img-top" alt="${hotel.hotelName}">
+                <span class="location-badge">
+                    <i class="fas fa-map-marker-alt"></i> ${hotel.city}, ${hotel.state}
+                </span>
+                <div class="card-body">
+                    <h5 class="card-title">${hotel.hotelName}</h5>
+                    <p class="card-text">
+                        Non-Room Cost: $${hotel.roomCost}<br>
+                        Ac-Room Cost: $${hotel.acRoomCost}<br>
+                        Food Cost : $${hotel.foodCost}
+                    </p>
+                    
+                    <a href="/book/hotel/${hotel.id}" class="btn btn-outline-primary w-100 mt-3">View Details</a>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
 
-    // Function to handle package search
-    function searchPackages() {
+// Modified searchPackages function
+function searchPackages() {
+    console.log("Search triggered");
     const destination = document.getElementById('searchDestination').value.trim();
-    const duration = document.getElementById('searchDuration').value; // optional for now
+    const duration = document.getElementById('searchDuration').value;
 
-    // Show loading spinner
-    document.getElementById('loadingSpinner').style.display = 'block';
+    const packagesContainer = document.getElementById('packagesContainer');
+    const hotelsContainer = document.getElementById('hotelsContainer');
 
-    // Construct the API URL with query parameters
-    const apiUrl = `http://localhost:8080/api/packages/search?city=${destination}&packName=${destination}`;
+    // Construct the API URLs
+    const apiUrlPackages = `http://localhost:8080/api/packages/search?city=${encodeURIComponent(destination)}&packName=${encodeURIComponent(destination)}`;
+    console.log("Fetching data from URL:", apiUrlPackages);
 
-    // Fetch data from the API
-    fetch(apiUrl)
+    // Fetch data for packages
+    fetch(apiUrlPackages)
         .then(response => {
+            console.log("Received response:", response);
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error(`Failed to fetch data. Status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            // Hide loading spinner
-            document.getElementById('loadingSpinner').style.display = 'none';
-
-            // Update the UI with the fetched data
+            console.log("Packages data fetched:", data);
             if (data && data.length > 0) {
-                displayPackages(data);
+                displayPackages(data); 
             } else {
-                document.getElementById('packagesContainer').innerHTML = `
+                packagesContainer.innerHTML = `
                     <div class="col-12 text-center text-muted">
                         No packages found for your search criteria.
                     </div>
@@ -306,16 +337,44 @@
             }
         })
         .catch(error => {
-            // Hide loading spinner and handle errors
-            document.getElementById('loadingSpinner').style.display = 'none';
-            console.error('Error fetching packages:', error);
-            alert('There was an error fetching the packages.');
+            console.error("Error during fetch:", error);
+            alert('There was an error fetching the packages. Please try again later.');
+        });
+
+    // Construct the API URL for hotels
+    const apiUrlHotels = `http://localhost:8080/api/hotels/search?city=${encodeURIComponent(destination)}&duration=${encodeURIComponent(duration)}`;
+    console.log("Fetching data from URL:", apiUrlHotels);
+
+    // Fetch data for hotels
+    fetch(apiUrlHotels)
+        .then(response => {
+            console.log("Received response:", response);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch data. Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Hotels data fetched:", data);
+            if (data && data.length > 0) {
+                displayHotels(data); 
+            } else {
+                hotelsContainer.innerHTML = `
+                    <div class="col-12 text-center text-muted">
+                        No hotels found for your search criteria.
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error("Error during fetch:", error);
+            alert('There was an error fetching the hotels. Please try again later.');
         });
 }
 
+// Initial display with dummy data
+displayPackages(tourPackages);
 
-    // Initial display with dummy data
-    displayPackages(tourPackages);
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

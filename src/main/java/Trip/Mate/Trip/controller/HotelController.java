@@ -7,10 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,13 +69,8 @@ public class HotelController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Hotel>> searchHotels(
-            @RequestParam(required = false) String place,
-            @RequestParam(required = false) BigDecimal minRoomCost,
-            @RequestParam(required = false) BigDecimal maxRoomCost,
-            @RequestParam(required = false) BigDecimal maxFoodCost) {
-
-        List<Hotel> filteredHotels = hotelService.searchHotels(place, minRoomCost, maxRoomCost, maxFoodCost);
+    public ResponseEntity<List<Hotel>> searchHotels(@RequestParam(value = "city", required = false) String city,@RequestParam(value = "name", required = false) String name) {
+        List<Hotel> filteredHotels = hotelService.searchHotels(city,name);
         return new ResponseEntity<>(filteredHotels, HttpStatus.OK);
     }
 }

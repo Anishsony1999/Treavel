@@ -10,11 +10,8 @@ import java.util.List;
 @Repository
 public interface HotelRepo extends JpaRepository<Hotel,Integer> {
 
-    List<Hotel> findByCityContainingIgnoreCaseOrHotelNameContainingIgnoreCaseAndRoomCostBetweenAndFoodCostLessThanEqual(
+    List<Hotel> findByCityContainingIgnoreCaseOrHotelNameContainingIgnoreCase(
             String city,
-            String hotelName,
-            BigDecimal minRoomCost,
-            BigDecimal maxRoomCost,
-            BigDecimal maxFoodCost
+            String hotelName
     );
 }
