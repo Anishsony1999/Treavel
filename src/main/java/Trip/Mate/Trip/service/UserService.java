@@ -24,9 +24,18 @@ public class UserService {
         userRepo.save(user);
     }
 
+    public void admin(HttpServletResponse response){
+        Cookie cookie = new Cookie("role", "admin");
+        cookie.setMaxAge(60 * 60);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+
+        response.addCookie(cookie);
+    }
     public User verifyUser(String email, String pass, HttpServletResponse response) {
         User user = userRepo.findByEmailAndPassword(email, pass);
-        if(user != null){
+        if (user != null){
             Cookie cookie = new Cookie("email", email);
             cookie.setMaxAge(60 * 60);
             cookie.setHttpOnly(true);

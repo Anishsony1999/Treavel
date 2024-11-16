@@ -17,7 +17,7 @@ public class PackBookingService {
 
     public void savePack(int pId, int count , Date date,String email){
         PackBooking booking = new PackBooking();
-        booking.setUserId(Math.toIntExact(userRepo.findByEmail(email).getId())); // just now only replace it by cookies
+        booking.setUserId(Math.toIntExact(userRepo.findByEmail(email).getId()));
         booking.setBookingDate(date);
         booking.setPackageId(pId);
         booking.setUserCount(count);

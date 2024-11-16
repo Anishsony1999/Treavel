@@ -46,9 +46,9 @@ public class PackageController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Package>> searchPackages(@RequestParam(required = false) String place,@RequestParam(required = false) String name) {
-        List<Package> filteredPackages = packService.searchPackages(place,name);
-        return new ResponseEntity<>(filteredPackages, HttpStatus.OK);
+    public ResponseEntity<List<Package>> searchPackages(@RequestParam(value = "city",required = false) String place,@RequestParam(value = "packName",required = false) String name) {
+        List<Package> packages = packService.searchPackages(place,name);
+        return ResponseEntity.ok(packages);
     }
 
     // Update package by ID

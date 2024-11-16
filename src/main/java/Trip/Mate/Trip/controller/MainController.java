@@ -35,9 +35,12 @@ public class MainController {
 
     @PostMapping("/login")
     public String UserLogin(@RequestParam("username") String email, @RequestParam("password") String pass, HttpServletResponse response){
-        System.out.println(email + pass);
+        if(email.equals("admin") && pass.equals("admin@123")){
+            userService.admin(response);
+            return "redirect:admin-home";
+        }
         User user = userService.verifyUser(email, pass,response);
-        if(user != null) return "redirect:admin-home";
+        if(user != null) return "redirect:/";
         return "redirect:register";
     }
 
@@ -60,16 +63,19 @@ public class MainController {
     }
 
     @PostMapping("/addHotel")
-    public String addHotel(@ModelAttribute HotelDto hotelDto, @RequestParam("image")MultipartFile image) throws IOException {
-        System.out.println(image);
-        hotelService.addHotel(hotelDto);
-        return "redirect:addpackage";
+    public String addHotel(@ModelAttribute HotelDto hotelDto, @RequestParam("image")MultipartFile image,@CookieValue(value = "role",required = true) String role) throws IOException {
+        if (role.equals("admin")) {
+            hotelService.addHotel(hotelDto);
+            return "redirect:addpackage";
+        }else return "redirect:login";
     }
 
     @GetMapping("/addpackage")
-    public String pack(Model model){
-        model.addAttribute("pack",new PackageDto());
-        return "add-package";
+    public String pack(@CookieValue(value = "role",required = true) String role,Model model){
+        if (role.equals("admin")) {
+            model.addAttribute("pack", new PackageDto());
+            return "add-package";
+        }else return "redirect:login";
     }
 
     @PostMapping("/addpackage")
@@ -79,11 +85,14 @@ public class MainController {
     }
 
     @GetMapping("/admin-home")
-    public String adminPage(){
-        return "admin-home";
+    public String adminPage(@CookieValue(value = "role",required = false) String role){
+        if (role != null)
+            return "admin-home";
+        else
+            return "redirect:login";
     }
 
-    @GetMapping("/home")
+    @GetMapping("/")
     public String home(){
         return "home";
     }
