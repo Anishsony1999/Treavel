@@ -51,6 +51,10 @@ public class UserService {
         return userRepo.findById(id);
     }
 
+    public User getUserByEmail(String email){
+        return userRepo.findByEmail(email);
+    }
+
     public User updateUser(int id, User updatedUser) {
         User existingUser = userRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("User with ID " + id + " not found"));

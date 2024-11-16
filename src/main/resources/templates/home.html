@@ -64,6 +64,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
+                <li class="nav-item" th:if="${user != null}">
+                    <span class="nav-link">Welcome, <span class="text-warning" th:text="${user}">User</span>!</span>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="#">Home</a>
                 </li>
@@ -73,8 +76,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#hotels">Hotels</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-danger" href="/login">login</a>
+                <li class="nav-item " th:if="${user != null}">
+                    <a class="nav-link text-danger" href="/logout">Log Out</a>
+                </li>
+                <li class="nav-item " th:if="${user == null}">
+                    <a class="nav-link text-danger" href="/login">Login</a>
                 </li>
             </ul>
         </div>
@@ -90,7 +96,7 @@
 </header>
 
 <main class="container my-5">
-    <section class="row mb-5">
+    <section class="row mb-5 d-flex justify-content-center align-items-center">
         <div class="col-md-4 mb-4">
             <div class="card text-center">
                 <div class="card-body">
@@ -111,7 +117,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mb-4">
+        <div class="col-md-4 mb-4" th:if="${user!=null}">
             <div class="card text-center">
                 <div class="card-body">
                     <i class="fas fa-user-circle feature-icon"></i>
@@ -289,7 +295,7 @@ function displayHotels(hotels) {
                 <div class="card-body">
                     <h5 class="card-title">${hotel.hotelName}</h5>
                     <p class="card-text">
-                        Non-Room Cost: $${hotel.roomCost}<br>
+                        Non-AC Room Cost: $${hotel.roomCost}<br>
                         Ac-Room Cost: $${hotel.acRoomCost}<br>
                         Food Cost : $${hotel.foodCost}
                     </p>

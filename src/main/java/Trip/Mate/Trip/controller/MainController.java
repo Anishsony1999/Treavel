@@ -31,6 +31,16 @@ public class MainController {
     private final PackService packService;
     private final PackBookingService bookingService;
 
+    @GetMapping("/")
+    public String home(@CookieValue(value = "email",required = false)String email,Model model){
+        if(email !=null){
+            User user = userService.getUserByEmail(email);
+            model.addAttribute("user",user.getFirstName());
+            return "home";
+        }
+        return "home";
+    }
+
     @GetMapping("/login")
     public String login(){
         return "login";
@@ -69,7 +79,7 @@ public class MainController {
     public String addHotel(@ModelAttribute HotelDto hotelDto, @RequestParam("image")MultipartFile image,@CookieValue(value = "role",required = true) String role) throws IOException {
         if (role.equals("admin")) {
             hotelService.addHotel(hotelDto);
-            return "redirect:addpackage";
+            return "redirect:admin-home";
         }else return "redirect:login";
     }
 
@@ -102,11 +112,6 @@ public class MainController {
             return "redirect:login";
     }
 
-    @GetMapping("/")
-    public String home(){
-        return "home";
-    }
-
     @GetMapping("/book/{id}")
     public String bookingPage(@PathVariable("id") int id, Model model){
         model.addAttribute("package",packService.packById(id));
@@ -122,7 +127,7 @@ public class MainController {
             @CookieValue(value = "email",required = false) String email) {
 
         bookingService.savePack(pId, count, date,email);
-        return "home";
+        return "redirect:/";
     }
 
     @GetMapping("/packageList")
