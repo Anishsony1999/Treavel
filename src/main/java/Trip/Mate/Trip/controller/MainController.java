@@ -3,12 +3,11 @@ package Trip.Mate.Trip.controller;
 import Trip.Mate.Trip.dto.HotelDto;
 import Trip.Mate.Trip.dto.PackageDto;
 import Trip.Mate.Trip.model.Hotel;
+import Trip.Mate.Trip.model.PackBooking;
 import Trip.Mate.Trip.model.Package;
 import Trip.Mate.Trip.model.User;
-import Trip.Mate.Trip.service.HotelService;
-import Trip.Mate.Trip.service.PackBookingService;
-import Trip.Mate.Trip.service.PackService;
-import Trip.Mate.Trip.service.UserService;
+import Trip.Mate.Trip.service.*;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -34,8 +33,7 @@ public class MainController {
     @GetMapping("/")
     public String home(@CookieValue(value = "email",required = false)String email,Model model){
         if(email !=null){
-            User user = userService.getUserByEmail(email);
-            model.addAttribute("user",user.getFirstName());
+            model.addAttribute("user",userService.getUserByEmail(email));
             return "home";
         }
         return "home";
@@ -113,22 +111,43 @@ public class MainController {
     }
 
     @GetMapping("/book/{id}")
-    public String bookingPage(@PathVariable("id") int id, Model model){
-        model.addAttribute("package",packService.packById(id));
-        return "booking";
+    public String bookingPage(@CookieValue(value = "email",required = false)String email,@PathVariable("id") int id, Model model){
+        if(email!=null){
+            model.addAttribute("package",packService.packById(id));
+            return "booking";
+        }else return "login";
+
     }
 
     @PostMapping("/packBook")
-    public String packBooking(
-            @RequestParam("package_id") int pId,
-            @RequestParam("totalPerson") int count,
-            @RequestParam("travelDate")
-            @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
-            @CookieValue(value = "email",required = false) String email) {
+    public String packBooking(@RequestParam("package_id") int pId,
+                              @RequestParam("totalPerson") int count,
+                              @RequestParam("travelDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+                              @RequestParam("customerName") String customerName,
+                              @CookieValue(value = "email", required = false) String email) {
 
-        bookingService.savePack(pId, count, date,email);
+        User user = userService.getUserByEmail(email);
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        Package packageToBook = packService.packById(pId);
+        if (packageToBook == null) {
+            return "redirect:/packages";
+        }
+
+        PackBooking packBooking = new PackBooking();
+        packBooking.setPack(packageToBook);
+        packBooking.setUser(user);
+        packBooking.setUserCount(count);
+        packBooking.setAmount(packBooking.getAmount()*count);
+        packBooking.setBookingDate(date);
+
+        bookingService.savePack(packBooking);
+
         return "redirect:/";
     }
+
 
     @GetMapping("/packageList")
     public String packageList(Model model){
@@ -146,6 +165,23 @@ public class MainController {
     public String users(Model model){
         model.addAttribute("users",userService.allDetails());
         return "allUsers";
+    }
+
+    @GetMapping("/bookingDetails/{id}")
+    public String bookingDetails(@PathVariable("id") int id,@CookieValue(value = "email",required = false)String email,Model model){
+        model.addAttribute("user",userService.getUserByEmail(email));
+        model.addAttribute("userBookings",bookingService.bookingById(id));
+        model.addAttribute("packages",packService.allPack());
+        return "bookingDetails";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletResponse response){
+        Cookie logoutCookie = new Cookie("email", null);
+        logoutCookie.setMaxAge(0);
+        logoutCookie.setPath("/");
+        response.addCookie(logoutCookie);
+        return "redirect:/";
     }
 
 }

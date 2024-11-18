@@ -9,22 +9,28 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "pack_bookings") // Optional: Specify table name
+@Table(name = "pack_bookings")
 public class PackBooking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "package_id", nullable = false)
-    private int packageId;
+    // Foreign key to Package entity
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "package_id", nullable = false)
+    private Package pack;
 
-    @Column(name = "user_id", nullable = false)
-    private int userId;
+    // Foreign key to User entity
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
+    private double amount;
     private int userCount;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "booking_date", nullable = false)
     private Date bookingDate;
+
 }

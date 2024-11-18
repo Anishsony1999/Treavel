@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced London Weather</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #87CEEB;
+            transition: background-color 5s ease;
+        }
+        .weather-card {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            width: 300px;
+            height: 400px;
+        }
+        .weather-icon {
+            width: 100px;
+            height: 100px;
+            margin: 20px auto;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            position: relative;
+            z-index: 2;
+        }
+        .rain {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="16" y1="13" x2="16" y2="21"></line><line x1="8" y1="13" x2="8" y2="21"></line><line x1="12" y1="15" x2="12" y2="23"></line><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path></svg>');
+            animation: rain 1s linear infinite;
+        }
+        .sun {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>');
+            animation: rotate 10s linear infinite;
+        }
+        .cloud {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>');
+            animation: float 5s ease-in-out infinite;
+        }
+        @keyframes rain {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(20px); }
+        }
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .day-night-cycle {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #87CEEB, #FFA500);
+            opacity: 0;
+            transition: opacity 5s ease;
+            z-index: 1;
+        }
+        .night .day-night-cycle {
+            background: linear-gradient(to bottom, #191970, #000000);
+            opacity: 1;
+        }
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .snowflakes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            pointer-events: none;
+        }
+        .snowflake {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(400px);
+            }
+        }
+        .current-temp {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            z-index: 4;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 5px 10px;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="weather-card">
+        <div class="day-night-cycle"></div>
+        <div class="stars"></div>
+        <div class="snowflakes"></div>
+        <div id="current-temp" class="current-temp"></div>
+        <h1>London Weather</h1>
+        <div id="weather-icon" class="weather-icon"></div>
+        <p id="temperature"></p>
+        <p id="description"></p>
+    </div>
+
+    <script>
+        const apiKey = 'b1ad394433fdb60d4ed0312361aae1f2';
+        const city = 'rome';
+        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=${apiKey}&units=metric`;
+
+        function createStars() {
+            const stars = document.querySelector('.stars');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.width = `${Math.random() * 3}px`;
+                star.style.height = star.style.width;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                stars.appendChild(star);
+            }
+        }
+
+        function createSnowflakes() {
+            const snowflakes = document.querySelector('.snowflakes');
+            for (let i = 0; i < 50; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.style.width = `${Math.random() * 5 + 2}px`;
+                snowflake.style.height = snowflake.style.width;
+                snowflake.style.left = `${Math.random() * 100}%`;
+                snowflake.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                snowflake.style.animationDelay = `${Math.random() * 2}s`;
+                snowflakes.appendChild(snowflake);
+            }
+        }
+
+        function setDayNightCycle() {
+            const hour = new Date().getHours();
+            const body = document.body;
+            if (hour >= 20 || hour < 6) {
+                body.classList.add('night');
+            } else {
+                body.classList.remove('night');
+            }
+        }
+
+        createStars();
+        createSnowflakes();
+        setDayNightCycle();
+        setInterval(setDayNightCycle, 60000); // Check every minute
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                const temp = Math.round(data.main.temp);
+                const description = data.weather[0].description;
+                const iconCode = data.weather[0].icon;
+
+                document.getElementById('current-temp').textContent = `${temp}°C`;
+                document.getElementById('temperature').textContent = `Temperature: ${temp}°C`;
+                document.getElementById('description').textContent = description;
+
+                const weatherIcon = document.getElementById('weather-icon');
+                if (iconCode.includes('01') || iconCode.includes('02')) {
+                    weatherIcon.classList.add('sun');
+                } else if (iconCode.includes('03') || iconCode.includes('04')) {
+                    weatherIcon.classList.add('cloud');
+                } else if (iconCode.includes('09') || iconCode.includes('10') || iconCode.includes('11')) {
+                    weatherIcon.classList.add('rain');
+                }
+
+                // Show snowflakes if it's winter
+                const month = new Date().getMonth();
+                if (month === 11 || month === 0 || month === 1) {
+                    document.querySelector('.snowflakes').style.display = 'block';
+                } else {
+                    document.querySelector('.snowflakes').style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching weather data:', error);
+                document.getElementById('temperature').textContent = 'Error fetching weather data';
+            });
+    </script>
+</body>
+</html>
