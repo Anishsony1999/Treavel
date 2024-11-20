@@ -76,6 +76,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#hotels">Hotels</a>
                 </li>
+                <li class="nav-item " th:if="${user == null}">
+                    <a class="nav-link text-success" href="/register">register</a>
+                </li>
                 <li class="nav-item " th:if="${user != null}">
                     <a class="nav-link text-danger" href="/logout">Log Out</a>
                 </li>

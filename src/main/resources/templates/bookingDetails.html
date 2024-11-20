@@ -73,7 +73,10 @@
                                 </p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <span class="h5" th:text="${booking.amount}">Price</span>
-                                    <a href="#" class="btn btn-outline-primary btn-sm">Add Memorys</a>
+                                    <form th:action="@{/addMemories}" >
+                                        <input type="hidden" name="bookingId" th:value="${booking.id}">
+                                        <button type="submit" class="btn btn-outline-primary btn-sm">Add Memories</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

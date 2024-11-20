@@ -23,8 +23,12 @@ public class PackBookingService {
         return packBooking.findAll();
     }
 
-    public List<PackBooking> bookingById(int id){
+    public List<PackBooking> bookingByUserId(int id){
         return packBooking.findByUserId(id);
+    }
+
+    public PackBooking bookingById(int id){
+        return packBooking.findById(id).orElseThrow( ()-> new RuntimeException("Booking not fount"));
     }
 
 }

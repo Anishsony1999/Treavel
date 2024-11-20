@@ -2,10 +2,8 @@ package Trip.Mate.Trip.controller;
 
 import Trip.Mate.Trip.dto.HotelDto;
 import Trip.Mate.Trip.dto.PackageDto;
-import Trip.Mate.Trip.model.Hotel;
-import Trip.Mate.Trip.model.PackBooking;
+import Trip.Mate.Trip.model.*;
 import Trip.Mate.Trip.model.Package;
-import Trip.Mate.Trip.model.User;
 import Trip.Mate.Trip.service.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +28,7 @@ public class MainController {
     private final HotelService hotelService;
     private final PackService packService;
     private final PackBookingService bookingService;
+    private final MemoryService memoryService;
 
     @GetMapping("/")
     public String home(@CookieValue(value = "email",required = false)String email,Model model){
@@ -114,6 +114,7 @@ public class MainController {
     public String bookingPage(@CookieValue(value = "email",required = false)String email,@PathVariable("id") int id, Model model){
         if(email!=null){
             model.addAttribute("package",packService.packById(id));
+            model.addAttribute("memories",memoryService.getMemoriesByPackId(id));
             return "booking";
         }else return "login";
 
@@ -168,11 +169,39 @@ public class MainController {
     }
 
     @GetMapping("/bookingDetails/{id}")
-    public String bookingDetails(@PathVariable("id") int id,@CookieValue(value = "email",required = false)String email,Model model){
+    public String bookingDetails(@PathVariable("id") int id,
+                                 @CookieValue(value = "email",required = false)String email,Model model){
         model.addAttribute("user",userService.getUserByEmail(email));
-        model.addAttribute("userBookings",bookingService.bookingById(id));
+        model.addAttribute("userBookings",bookingService.bookingByUserId(id));
         model.addAttribute("packages",packService.allPack());
         return "bookingDetails";
+    }
+
+    @GetMapping("/addMemories")
+    public String addMemoriesPage(@RequestParam("bookingId") int id,Model model){
+        model.addAttribute("bookingId",id);
+        return "addMemories";
+    }
+
+    @PostMapping("/addMemories")
+    public String addMemories(@RequestParam("images") MultipartFile[] images,
+                              @RequestParam("title") String title,
+                              @RequestParam("description") String description,
+                              @RequestParam("bookingId") int id,
+                              @CookieValue(value = "email",required = false)String email,
+                              Model model) throws IOException {
+
+        PackBooking booking = bookingService.bookingById(id);
+
+        memoryService.save(
+                images,
+                title,
+                description,
+                userService.getUserByEmail(email),
+                packService.packById((int) booking.getPack().getId()),
+                bookingService.bookingById(id)
+        );
+        return "redirect:/";
     }
 
     @GetMapping("/logout")
