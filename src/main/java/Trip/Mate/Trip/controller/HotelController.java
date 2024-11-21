@@ -44,6 +44,7 @@ public class HotelController {
         return hotel.map(ResponseEntity::ok).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+
     // Update hotel by ID
     @PutMapping("/{id}")
     public ResponseEntity<String> updateHotel(@PathVariable int id, @ModelAttribute HotelDto hotelDto) {

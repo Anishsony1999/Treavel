@@ -2,6 +2,8 @@ package Trip.Mate.Trip.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -26,7 +28,7 @@ public class PackBooking {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private double amount;
+    private BigDecimal amount;
     private int userCount;
 
     @Temporal(TemporalType.DATE)

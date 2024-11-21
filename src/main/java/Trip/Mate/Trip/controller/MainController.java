@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -111,13 +112,19 @@ public class MainController {
     }
 
     @GetMapping("/book/{id}")
-    public String bookingPage(@CookieValue(value = "email",required = false)String email,@PathVariable("id") int id, Model model){
+    public String bookingPage(@CookieValue(value = "email",required = false)String email,@PathVariable("id") int id, Model model) throws IOException {
         if(email!=null){
-            model.addAttribute("package",packService.packById(id));
+            Package pack = packService.packById(id);
+            model.addAttribute("package",pack);
             model.addAttribute("memories",memoryService.getMemoriesByPackId(id));
+            model.addAttribute("hotels",hotelService.searchHotels(pack.getCity(),pack.getPackName()));
+            if(!pack.getCountry().equals("india")){
+                BigDecimal currency = packService.getCurrency(pack.getCountry(),pack.getPricePerPerson());
+                model.addAttribute("currency",currency);
+                return "booking";
+            }
             return "booking";
         }else return "login";
-
     }
 
     @PostMapping("/packBook")
@@ -141,7 +148,7 @@ public class MainController {
         packBooking.setPack(packageToBook);
         packBooking.setUser(user);
         packBooking.setUserCount(count);
-        packBooking.setAmount(packBooking.getAmount()*count);
+        packBooking.setAmount((packageToBook.getPricePerPerson().multiply(BigDecimal.valueOf(count))));
         packBooking.setBookingDate(date);
 
         bookingService.savePack(packBooking);

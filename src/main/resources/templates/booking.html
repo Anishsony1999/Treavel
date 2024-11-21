@@ -197,9 +197,18 @@
                                 <label for="travelDate" class="form-label">Travel Date</label>
                                 <input type="date" class="form-control" id="travelDate" name="travelDate" required>
                             </div>
+                            <div class="mb-3">
+                                <label for="hotelName" class="form-label">Select Hotel</label>
+                                <select class="form-select" id="hotelName" name="hotelName" required>
+                                    <option th:each="hotel : ${hotels}" th:value="${hotel.hotelName}" th:text="${hotel.hotelName}">Hotel Name</option>
+                                </select>
+                            </div>                            
                             <input type="hidden" name="totalPrice" id="totalPrice" th:value="${package.pricePerPerson}">
                             <div class="mb-3">
                                 <p>Total Price: $<span id="displayTotalPrice" th:text="${#numbers.formatDecimal(package.pricePerPerson, 0, 'COMMA', 2, 'POINT')}">0.00</span></p>
+                            </div>
+                            <div class="mb-3" th:if="${currency != null}">
+                                <p style="font-size: 17px;font-weight:600;">Total Price in Dollar : $ <span id="dollar" style="font-size: 20px;font-weight:700;" th:text="${#numbers.formatDecimal(currency, 0, 'COMMA', 2, 'POINT')}">$0.00</span></p>
                             </div>
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-primary">Book Now</button>
@@ -251,6 +260,11 @@
             const totalPrice = totalPerson * packagePrice;
             document.getElementById('totalPrice').value = totalPrice;
             document.getElementById('displayTotalPrice').textContent = totalPrice.toFixed(2);
+
+            const currency = parseFloat([[${currency != null ? currency : 0}]]);
+        if (currency > 0) {
+            const totalDollar = totalPerson * currency;
+            document.getElementById('dollar').textContent = totalDollar.toFixed(2);
         }
     
         document.getElementById('totalPerson').addEventListener('change', calculatePrice);

@@ -10,6 +10,7 @@ public class PackageDto {
     private String description;
     private String city;
     private String state;
+    private String country;
     private int days;
     private int night;
     private double pricePerPerson;

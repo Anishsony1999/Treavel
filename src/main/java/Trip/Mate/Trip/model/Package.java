@@ -24,6 +24,7 @@ public class Package {
     private String description;
     private String city;
     private String state;
+    private String country;
     private int days;
     private int night;
     private BigDecimal pricePerPerson;

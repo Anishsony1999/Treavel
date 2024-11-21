@@ -55,7 +55,6 @@ public class MemoryService {
                 memory.setTitle(title);
                 memory.setDescription(description);
 
-                // Set the relative URL for accessing the image
                 memory.setImgUrl("/"+relativePath.replace(File.separator, "/") + "/" + filename);
 
                 memory.setUser(user);
