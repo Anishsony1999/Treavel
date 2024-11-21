@@ -163,24 +163,6 @@
         <div class="row g-4" id="hotelsContainer">
             <!-- Packages will be dynamically inserted here -->
         </div>
-        <div class="row">
-            <div class="col-md-3 mb-4">
-                <img src="/placeholder.svg?height=200&width=300" alt="Luxury Hotel" class="img-fluid rounded">
-                <h5 class="mt-2">Luxury Hotel, Paris</h5>
-            </div>
-            <div class="col-md-3 mb-4">
-                <img src="/placeholder.svg?height=200&width=300" alt="Beach Resort" class="img-fluid rounded">
-                <h5 class="mt-2">Beach Resort, Bali</h5>
-            </div>
-            <div class="col-md-3 mb-4">
-                <img src="/placeholder.svg?height=200&width=300" alt="City Center Hotel" class="img-fluid rounded">
-                <h5 class="mt-2">City Center Hotel, New York</h5>
-            </div>
-            <div class="col-md-3 mb-4">
-                <img src="/placeholder.svg?height=200&width=300" alt="Mountain Lodge" class="img-fluid rounded">
-                <h5 class="mt-2">Mountain Lodge, Switzerland</h5>
-            </div>
-        </div>
     </section>
 
     <!-- <section id="bookings" class="mb-5">
@@ -322,7 +304,9 @@ function searchPackages() {
     const hotelsContainer = document.getElementById('hotelsContainer');
 
     // Construct the API URLs
-    const apiUrlPackages = `http://localhost:8080/api/packages/search?city=${encodeURIComponent(destination)}&packName=${encodeURIComponent(destination)}`;
+    const url = window.location.href;
+    console.log(url);
+    const apiUrlPackages = `${url}api/packages/search?city=${encodeURIComponent(destination)}&packName=${encodeURIComponent(destination)}`;
     console.log("Fetching data from URL:", apiUrlPackages);
 
     // Fetch data for packages
@@ -352,7 +336,7 @@ function searchPackages() {
         });
 
     // Construct the API URL for hotels
-    const apiUrlHotels = `http://localhost:8080/api/hotels/search?city=${encodeURIComponent(destination)}&duration=${encodeURIComponent(duration)}`;
+    const apiUrlHotels = `${url}api/hotels/search?city=${encodeURIComponent(destination)}&duration=${encodeURIComponent(duration)}`;
     console.log("Fetching data from URL:", apiUrlHotels);
 
     // Fetch data for hotels
