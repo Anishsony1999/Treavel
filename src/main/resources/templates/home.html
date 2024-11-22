@@ -140,9 +140,9 @@
                 </div>
                 <div class="col-md-3">
                     <select class="form-select" id="searchDuration" aria-label="Select duration">
-                        <option value="1-3">1-3 Days</option>
-                        <option value="4-7">4-7 Days</option>
-                        <option value="8+">8+ Days</option>
+                        <option value="1">1-3 Days</option>
+                        <option value="4">4-7 Days</option>
+                        <option value="8">8+ Days</option>
                     </select>
                 </div>
                 <div class="col-md-3">
@@ -286,7 +286,7 @@ function displayHotels(hotels) {
                         Food Cost : $${hotel.foodCost}
                     </p>
                     
-                    <a href="/book/hotel/${hotel.id}" class="btn btn-outline-primary w-100 mt-3">View Details</a>
+                     <a href="/book/${hotel.id}" class="btn btn-outline-primary w-100 mt-3">View Details</a>
                 </div>
             </div>
         `;
@@ -306,7 +306,7 @@ function searchPackages() {
     // Construct the API URLs
     const url = window.location.href;
     console.log(url);
-    const apiUrlPackages = `${url}api/packages/search?city=${encodeURIComponent(destination)}&packName=${encodeURIComponent(destination)}`;
+    const apiUrlPackages = `${url}api/packages/search?pack=${encodeURIComponent(destination)}&date=${encodeURIComponent(duration)}`;
     console.log("Fetching data from URL:", apiUrlPackages);
 
     // Fetch data for packages
@@ -336,7 +336,7 @@ function searchPackages() {
         });
 
     // Construct the API URL for hotels
-    const apiUrlHotels = `${url}api/hotels/search?city=${encodeURIComponent(destination)}&duration=${encodeURIComponent(duration)}`;
+    const apiUrlHotels = `${url}api/hotels/search?city=${encodeURIComponent(destination)}&duration=${encodeURIComponent(destination)}`;
     console.log("Fetching data from URL:", apiUrlHotels);
 
     // Fetch data for hotels

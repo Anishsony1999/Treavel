@@ -23,6 +23,10 @@ public class PackBooking {
     @JoinColumn(name = "package_id", nullable = false)
     private Package pack;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id", nullable = false)
+    private Hotel hotel;
+
     // Foreign key to User entity
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface PackRepo extends JpaRepository<Package,Integer> {
-    List<Package> findByCityContainingIgnoreCaseOrPackName(String city, String packName);
+    List<Package> findByPackNameContainingIgnoreCaseAndDaysGreaterThanEqual(String pack, Integer days);
 
 }

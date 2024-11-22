@@ -98,14 +98,13 @@ public class PackService {
         packRepo.deleteById(id);
     }
 
-    public List<Package> searchPackages(String place,String name) {
-
-        return packRepo.findByCityContainingIgnoreCaseOrPackName(place,name);
+    public List<Package> searchPackages(String place,Integer date) {
+        return packRepo.findByPackNameContainingIgnoreCaseAndDaysGreaterThanEqual(place,date);
     }
 
     public BigDecimal getCurrency(String country,BigDecimal amount) throws IOException {
 
-        // Want to replace the Country now , give it a static value // 'USD'
+        // Want to replace the Country. now ,I just give it a static value = 'USD'
         country = "USD";
         String apiUrl = url + key + "/latest/INR";
         RestTemplate restTemplate = new RestTemplate();

@@ -1,9 +1,7 @@
 package Trip.Mate.Trip.service;
 
-import Trip.Mate.Trip.model.Memories;
-import Trip.Mate.Trip.model.PackBooking;
+import Trip.Mate.Trip.model.*;
 import Trip.Mate.Trip.model.Package;
-import Trip.Mate.Trip.model.User;
 import Trip.Mate.Trip.repo.MemoryRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

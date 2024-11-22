@@ -1,5 +1,6 @@
 package Trip.Mate.Trip.service;
 
+import Trip.Mate.Trip.model.Hotel;
 import Trip.Mate.Trip.model.PackBooking;
 import Trip.Mate.Trip.repo.PackBookingRepo;
 import lombok.RequiredArgsConstructor;

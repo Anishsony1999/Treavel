@@ -81,44 +81,28 @@
                             </div>
                         </div>
                     </div>
-            </div>
+                </div>
         </div>
         <div class="tab-pane fade" id="hotels" role="tabpanel" aria-labelledby="hotels-tab">
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="card">
+            <div class="row g-4"  th:each="hotelBooking : ${userBookings}">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <img th:src="${hotelBooking.hotel.imgUrl}" alt="Hotel Image" class="card-img-top booking-img" style="height: 200px;"/>
                         <div class="card-body">
-                            <h5 class="card-title">Luxury Hotel</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Booking ID: #LH2024003</h6>
+                            <h5 class="card-title" th:text="${hotelBooking.hotel.hotelName}">Hotel Name</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Booking ID: <span th:text="${hotelBooking.id}">#Booking ID</span></h6>
                             <p class="card-text">
-                                <i class="fas fa-map-marker-alt"></i> Paris, France<br>
-                                <i class="far fa-calendar-alt"></i> May 20, 2024 - May 25, 2024<br>
-                                <i class="fas fa-hotel"></i> Deluxe Room (AC)
+                                <i class="fas fa-map-marker-alt"></i> <span th:text="${hotelBooking.hotel.city + ', ' + hotelBooking.hotel.state}">Location</span><br>
                             </p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="h5">$1,899.99</span>
-                                <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
+                                <!-- <span class="h5" th:text="${hotelBooking.totalAmount}">Price</span> -->
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Beach Resort</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Booking ID: #BR2024004</h6>
-                            <p class="card-text">
-                                <i class="fas fa-map-marker-alt"></i> Bali, Indonesia<br>
-                                <i class="far fa-calendar-alt"></i> June 5, 2024 - June 10, 2024<br>
-                                <i class="fas fa-hotel"></i> Ocean View Suite (AC)
-                            </p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="h5">$2,299.99</span>
-                                <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            </div>
+            <div th:if="${#lists.isEmpty(userBookings)}" class="text-center">
+                <p class="text-muted">No hotel bookings found.</p>
             </div>
         </div>
     </div>

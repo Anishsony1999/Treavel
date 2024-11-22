@@ -14,4 +14,6 @@ public interface HotelRepo extends JpaRepository<Hotel,Integer> {
             String city,
             String hotelName
     );
+
+    Hotel findByHotelName(String hotel);
 }
