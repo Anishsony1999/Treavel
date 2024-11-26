@@ -164,6 +164,7 @@ public class MainController {
                               @RequestParam("totalPerson") int count,
                               @RequestParam("travelDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
                               @RequestParam("customerName") String customerName,
+                              @RequestParam("hotelName") String hotel,
                               @CookieValue(value = "email", required = false) String email) {
 
         User user = userService.getUserByEmail(email);
@@ -181,6 +182,7 @@ public class MainController {
         packBooking.setUser(user);
         packBooking.setUserCount(count);
         packBooking.setAmount((packageToBook.getPricePerPerson().multiply(BigDecimal.valueOf(count))));
+        packBooking.setHotel(hotelService.findHotelByName(hotel));
         packBooking.setBookingDate(date);
 
         bookingService.savePack(packBooking);

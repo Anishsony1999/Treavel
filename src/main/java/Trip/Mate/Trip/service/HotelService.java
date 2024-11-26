@@ -91,4 +91,8 @@ public class HotelService {
     public List<Hotel> searchHotels(String city,String name) {
         return hotelRepo.findByCityContainingIgnoreCaseOrHotelNameContainingIgnoreCase(city, name);
     }
+
+    public Hotel findHotelByName(String hotel) {
+        return  hotelRepo.findByHotelName(hotel);
+    }
 }

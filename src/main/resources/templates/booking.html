@@ -119,7 +119,7 @@
                     </ul>
                 </div>
                 <div class="weather-card">
-                    <h3>Weather in <span th:text="${package.city}">City Name</span></h3>
+                    <h3>Weather in <span th:text="${package.packName}">City Name</span></h3>
                     <div id="weather-icon" class="weather-icon"></div>
                     <p id="temperature"></p>
                     <p id="description"></p>
@@ -163,9 +163,14 @@
                             <div class="mb-3">
                                 <label for="hotelName" class="form-label">Select Hotel</label>
                                 <select class="form-select" id="hotelName" name="hotelName" required>
-                                    <option th:each="hotel : ${hotels}" th:value="${hotel.hotelName}" th:text="${hotel.hotelName}">Hotel Name</option>
+                                    <option >Select A Hotel</option>
+                                    <option th:each="hotel : ${hotels}" th:value="${hotel.id}" th:text="${hotel.hotelName}">Hotel Name</option>
                                 </select>
-                            </div>                            
+                            </div> 
+                            <div class="mb-3" id="hotelRates" style="display: none;">
+                                <label class="form-label">Hotel Room Rates</label>
+                                <div id="hotelRateOptions"></div>
+                            </div>
                             <input type="hidden" name="totalPrice" id="totalPrice" th:value="${package.pricePerPerson}">
                             <div class="mb-3">
                                 <p>Total Price in Rupee: <span id="displayTotalPrice" th:text="${#numbers.formatDecimal(package.pricePerPerson, 0, 'COMMA', 2, 'POINT')}">0.00</span></p>
@@ -207,7 +212,7 @@
                 } else if (iconCode.startsWith('09') || iconCode.startsWith('10') || iconCode === '11d') {
                     weatherIcon.classList.add('rain');
                 } else {
-                    weatherIcon.classList.add('cloud'); // Default fallback
+                    weatherIcon.classList.add('cloud'); 
                 }
             })
             .catch(error => {
@@ -215,23 +220,86 @@
                 document.getElementById('temperature').textContent = 'No Data Found';
             });
     </script>
+
     
-    <script th:inline="javascript">
-        function calculatePrice() {
-            const totalPerson = document.getElementById('totalPerson').value;
-            const packagePrice = [[${package.pricePerPerson}]];
-            const totalPrice = totalPerson * packagePrice;
-            document.getElementById('totalPrice').value = totalPrice;
+    <script>
+       // Recalculate the total price based on travelers and room rate
+        function calculateTotalPrice() {
+            const totalPerson = parseInt(document.getElementById('totalPerson').value, 10) || 0;
+            const packagePrice = parseFloat([[${package.pricePerPerson}]]) || 0; // Price per person from backend
+            const selectedRoomRate = parseFloat(document.querySelector('input[name="roomRate"]:checked')?.value || 0);
+
+            // Calculate the total price
+            const packageTotal = totalPerson * packagePrice;
+            const roomTotal = totalPerson * selectedRoomRate;
+            const totalPrice = packageTotal + roomTotal;
+
+            // Update the total price fields
+            document.getElementById('totalPrice').value = totalPrice.toFixed(2);
             document.getElementById('displayTotalPrice').textContent = totalPrice.toFixed(2);
 
-            const currency = parseFloat([[${currency != null ? currency : 0}]]);
-        if (currency > 0) {
-            const totalDollar = totalPerson * currency;
-            document.getElementById('dollar').textContent = totalDollar.toFixed(2);
+            // Currency conversion
+            const currencyRate = parseFloat([[${currency != null ? currency : 0}]]);
+            if (currencyRate > 0) {
+                const convertedPrice = totalPrice * currencyRate;
+                document.getElementById('dollar').textContent = convertedPrice.toFixed(2);
+            }
         }
-    
-        document.getElementById('totalPerson').addEventListener('change', calculatePrice);
-    
+
+        // Event Listeners
+        document.getElementById('totalPerson').addEventListener('input', calculateTotalPrice);
+        document.getElementById('hotelRateOptions').addEventListener('change', calculateTotalPrice);
+        document.getElementById('hotelName').addEventListener('change', function () {
+            const selectedHotelId = this.value;
+            const url = `/api/hotels/${selectedHotelId}`;
+
+            if (selectedHotelId) {
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        const hotelRatesDiv = document.getElementById('hotelRates');
+                        const hotelRateOptions = document.getElementById('hotelRateOptions');
+
+                        // Show hotel rates section
+                        hotelRatesDiv.style.display = "block";
+
+                        // Clear previous options
+                        hotelRateOptions.innerHTML = "";
+
+                        // Add AC Room Rate Option
+                        if (data.acRoomCost) {
+                            hotelRateOptions.innerHTML += `
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="roomRate" id="acRoom" value="${data.acRoomCost}" required>
+                                    <label class="form-check-label" for="acRoom">AC Room - $${data.acRoomCost.toFixed(2)}</label>
+                                </div>
+                            `;
+                        }
+
+                        // Add Non-AC Room Rate Option
+                        if (data.roomCost) {
+                            hotelRateOptions.innerHTML += `
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="roomRate" id="nonAcRoom" value="${data.roomCost}" required>
+                                    <label class="form-check-label" for="nonAcRoom">Non-AC Room - $${data.roomCost.toFixed(2)}</label>
+                                </div>
+                            `;
+                        }
+
+                        // Recalculate the total price after room rate options are loaded
+                        document.querySelectorAll('input[name="roomRate"]').forEach(input => {
+                            input.addEventListener('change', calculateTotalPrice);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching hotel details:', error);
+                        document.getElementById('hotelRates').style.display = "none";
+                    });
+            } else {
+                document.getElementById('hotelRates').style.display = "none";
+            }
+        });
+
     </script>
     
 
