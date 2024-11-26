@@ -197,41 +197,24 @@
 
 <script>
     // Sample data
-const tourPackages = [
-    {
-        id: 1,
-        packName: "Mystic Mountain Retreat",
-        description: "Experience the serene beauty of mountain landscapes with this amazing tour package.",
-        city: "Aspen",
-        state: "Colorado",
-        days: 5,
-        night: 4,
-        pricePerPerson: 1299.99,
-        imageUrl: "/placeholder.svg?height=600&width=800"
-    },
-    {
-        id: 2,
-        packName: "Coastal Paradise",
-        description: "Enjoy the sun, sand, and surf in this spectacular beach getaway.",
-        city: "Miami",
-        state: "Florida",
-        days: 7,
-        night: 6,
-        pricePerPerson: 1599.99,
-        imageUrl: "/placeholder.svg?height=600&width=800"
-    },
-    {
-        id: 3,
-        packName: "Desert Adventure",
-        description: "Explore the magical desert landscapes and experience unique adventures.",
-        city: "Phoenix",
-        state: "Arizona",
-        days: 4,
-        night: 3,
-        pricePerPerson: 899.99,
-        imageUrl: "/placeholder.svg?height=600&width=800"
-    }
-];
+    const encodedJson = '[[${packages}]]';
+
+    // Decode HTML entities
+    const parser = new DOMParser();
+    const decodedString = parser.parseFromString(encodedJson, 'text/html').body.textContent;
+
+    // Parse the decoded string
+    const tourPackages = JSON.parse(decodedString);
+
+    // Sample data hotels
+    const hotelsencodedJson = '[[${hotels}]]';
+
+    // Decode HTML entities
+    const hotelsparser = new DOMParser();
+    const hotelsdecodedString = hotelsparser.parseFromString(hotelsencodedJson, 'text/html').body.textContent;
+
+    // Parse the decoded string
+    const hotels = JSON.parse(hotelsdecodedString);
 
 // Function to display the packages
 function displayPackages(packages) {
@@ -254,7 +237,7 @@ function displayPackages(packages) {
                             <i class="fas fa-clock"></i> ${pkg.days}D/${pkg.night}N
                         </div>
                         <div class="text-primary fw-bold">
-                            $${pkg.pricePerPerson.toLocaleString()}
+                            ${pkg.pricePerPerson.toLocaleString()}
                         </div>
                     </div>
                     <a href="/book/${pkg.id}" class="btn btn-outline-primary w-100 mt-3">View Details</a>
@@ -285,8 +268,6 @@ function displayHotels(hotels) {
                         Ac-Room Cost: $${hotel.acRoomCost}<br>
                         Food Cost : $${hotel.foodCost}
                     </p>
-                    
-                    <a href="/book/hotel/${hotel.id}" class="btn btn-outline-primary w-100 mt-3">View Details</a>
                 </div>
             </div>
         `;
@@ -304,9 +285,9 @@ function searchPackages() {
     const hotelsContainer = document.getElementById('hotelsContainer');
 
     // Construct the API URLs
-    const url = window.location.href;
+    const url = window.location.origin;
     console.log(url);
-    const apiUrlPackages = `${url}api/packages/search?city=${encodeURIComponent(destination)}&packName=${encodeURIComponent(destination)}`;
+    const apiUrlPackages = `${url}/api/packages/search?city=${encodeURIComponent(destination)}&packName=${encodeURIComponent(destination)}&duration=${encodeURIComponent(duration)}`;
     console.log("Fetching data from URL:", apiUrlPackages);
 
     // Fetch data for packages
@@ -336,7 +317,7 @@ function searchPackages() {
         });
 
     // Construct the API URL for hotels
-    const apiUrlHotels = `${url}api/hotels/search?city=${encodeURIComponent(destination)}&duration=${encodeURIComponent(duration)}`;
+    const apiUrlHotels = `${url}/api/hotels/search?city=${encodeURIComponent(destination)}&duration=${encodeURIComponent(duration)}`;
     console.log("Fetching data from URL:", apiUrlHotels);
 
     // Fetch data for hotels
@@ -368,6 +349,7 @@ function searchPackages() {
 
 // Initial display with dummy data
 displayPackages(tourPackages);
+    displayHotels(hotels);
 
 </script>
 

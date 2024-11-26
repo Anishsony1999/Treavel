@@ -100,31 +100,6 @@
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <a class="navbar-brand" href="/">Booking</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/#packages">Packages</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/#hotels">Hotels</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/#bookings">My Bookings</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
 
     <!-- Main Content -->
     <main class="container my-5">
@@ -133,6 +108,7 @@
             <div class="col-lg-8">
                 <img th:src="@{${package.imageUrl}}" th:alt="${package.packName}" class="product-image mb-4">
                 <h1 th:id="pName" th:text="${package.packName}">Package Name</h1>
+                <input type="hidden" th:id="packagecity" th:value="${package.city}">
                 <p class="lead" th:text="${package.description}">Package description goes here.</p>
                 <div class="mb-4">
                     <h3>Package Details</h3>
@@ -158,19 +134,6 @@
                                 <img th:src="@{${memorie.imgUrl}}" alt="Memory Image" class="card-img-top"/>
                             </div>
                         </div>
-                        <!-- Example layout -->
-                        <!-- <div class="col">
-                            <div class="card h-100">
-                                <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Review Image 2">
-                                <div class="card-body">
-                                    <h5 class="card-title">Jane Smith</h5>
-                                    <p class="card-text">"The views were breathtaking and the service was excellent!"</p>
-                                </div>
-                                <div class="card-footer text-muted">
-                                    Rated: ★★★★☆
-                                </div>
-                            </div>
-                        </div> -->
                     </div>
                 </div>
                 
@@ -205,7 +168,7 @@
                             </div>                            
                             <input type="hidden" name="totalPrice" id="totalPrice" th:value="${package.pricePerPerson}">
                             <div class="mb-3">
-                                <p>Total Price: $<span id="displayTotalPrice" th:text="${#numbers.formatDecimal(package.pricePerPerson, 0, 'COMMA', 2, 'POINT')}">0.00</span></p>
+                                <p>Total Price in Rupee: <span id="displayTotalPrice" th:text="${#numbers.formatDecimal(package.pricePerPerson, 0, 'COMMA', 2, 'POINT')}">0.00</span></p>
                             </div>
                             <div class="mb-3" th:if="${currency != null}">
                                 <p style="font-size: 17px;font-weight:600;">Total Price in Dollar : $ <span id="dollar" style="font-size: 20px;font-weight:700;" th:text="${#numbers.formatDecimal(currency, 0, 'COMMA', 2, 'POINT')}">$0.00</span></p>
@@ -222,7 +185,7 @@
 
     <script>
         const apiKey = 'b1ad394433fdb60d4ed0312361aae1f2';
-        const city = document.getElementById('pName').textContent.trim();
+        const city = document.getElementById('packagecity').value.trim();
         console.log(city)
         const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=${apiKey}&units=metric`;
     
@@ -249,7 +212,7 @@
             })
             .catch(error => {
                 console.error('Error fetching weather data:', error);
-                document.getElementById('temperature').textContent = 'Error fetching weather data';
+                document.getElementById('temperature').textContent = 'No Data Found';
             });
     </script>
     

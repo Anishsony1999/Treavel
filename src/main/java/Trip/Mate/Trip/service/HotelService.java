@@ -2,6 +2,7 @@ package Trip.Mate.Trip.service;
 
 import Trip.Mate.Trip.dto.HotelDto;
 import Trip.Mate.Trip.model.Hotel;
+import Trip.Mate.Trip.model.Package;
 import Trip.Mate.Trip.repo.HotelRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +43,10 @@ public class HotelService {
         hotel.setImgUrl("/hotelImages/" + fileName);
 
         hotelRepo.save(hotel);
+    }
+
+    public List<Hotel> topHotels(){
+        return hotelRepo.findTop3ByOrderByIdAsc();
     }
 
     public List<Hotel> getAllHotels() {

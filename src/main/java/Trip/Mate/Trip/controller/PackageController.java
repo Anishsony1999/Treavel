@@ -46,8 +46,11 @@ public class PackageController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Package>> searchPackages(@RequestParam(value = "city",required = false) String place,@RequestParam(value = "packName",required = false) String name) {
-        List<Package> packages = packService.searchPackages(place,name);
+    public ResponseEntity<List<Package>> searchPackages(@RequestParam(value = "city",required = false) String place,@RequestParam(value = "packName",required = false) String name,@RequestParam(value = "duration")String duration) {
+        String[] parts = duration.split("-");
+        int start = Integer.parseInt(parts[0].trim());
+        int end = Integer.parseInt(parts[1].trim());
+        List<Package> packages = packService.searchPackages(place,name,start,end);
         return ResponseEntity.ok(packages);
     }
 

@@ -58,18 +58,32 @@ public class PackService {
         pack.setImageUrl("/packageImages/" + fileName);
 
         packRepo.save(pack);
+
+        String apiUrl = "http://localhost:5000/api/train";
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            restTemplate.getForObject(apiUrl,String.class);
+            System.out.println("Success");
+        }catch (Exception e){
+            System.out.println("ERROR IN TRAINING");
+        }
     }
 
     public List<Package> allPack(){
         return packRepo.findAll();
     }
-
-    public Package packById(int id){
-        return packRepo.findById(id).orElseThrow(()-> new RuntimeException("Pack Not Fount"));
+    public List<Package> findAllById(List<Long> ids){
+        return packRepo.findAllById(ids);
+    }
+    public List<Package> toppackages(){
+        return packRepo.findTop3ByOrderByIdAsc();
+    }
+    public Package packById(long id){
+        return packRepo.findById(id).orElseThrow(()-> new RuntimeException("Pack Not Found"));
     }
 
     @Transactional
-    public void updatePackage(int id, PackageDto packageDto) throws IOException {
+    public void updatePackage(long id, PackageDto packageDto) throws IOException {
 
         Package existingPackage = packRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Package with ID " + id + " not found"));
@@ -92,20 +106,27 @@ public class PackService {
         }
 
         packRepo.save(existingPackage);
+        String apiUrl = "http://localhost:5000/api/train";
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            restTemplate.getForObject(apiUrl,String.class);
+            System.out.println("Success");
+        }catch (Exception e){
+            System.out.println("ERROR IN TRAINING");
+        }
     }
 
-    public void deleteById(int id){
+    public void deleteById(long id){
         packRepo.deleteById(id);
     }
 
-    public List<Package> searchPackages(String place,String name) {
+    public List<Package> searchPackages(String place,String name,int start,int end) {
 
-        return packRepo.findByCityContainingIgnoreCaseOrPackName(place,name);
+        return packRepo.findByCityOrPackNameAndDaysInRange(place,name,start,end);
     }
 
     public BigDecimal getCurrency(String country,BigDecimal amount) throws IOException {
 
-        // Want to replace the Country now , give it a static value // 'USD'
         country = "USD";
         String apiUrl = url + key + "/latest/INR";
         RestTemplate restTemplate = new RestTemplate();

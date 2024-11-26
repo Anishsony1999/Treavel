@@ -1,6 +1,7 @@
 package Trip.Mate.Trip.repo;
 
 import Trip.Mate.Trip.model.Hotel;
+import Trip.Mate.Trip.model.Package;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +15,6 @@ public interface HotelRepo extends JpaRepository<Hotel,Integer> {
             String city,
             String hotelName
     );
+
+    List<Hotel> findTop3ByOrderByIdAsc();
 }

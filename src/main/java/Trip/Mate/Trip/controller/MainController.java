@@ -5,6 +5,8 @@ import Trip.Mate.Trip.dto.PackageDto;
 import Trip.Mate.Trip.model.*;
 import Trip.Mate.Trip.model.Package;
 import Trip.Mate.Trip.service.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -19,6 +22,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -32,10 +37,37 @@ public class MainController {
     private final MemoryService memoryService;
 
     @GetMapping("/")
-    public String home(@CookieValue(value = "email",required = false)String email,Model model){
+    public String home(@CookieValue(value = "email",required = false)String email,Model model) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper hotelmapper = new ObjectMapper();
+        String topHotelJson = hotelmapper.writeValueAsString(hotelService.topHotels());
+        model.addAttribute("hotels",topHotelJson);
         if(email !=null){
-            model.addAttribute("user",userService.getUserByEmail(email));
+            User user = userService.getUserByEmail(email);
+            model.addAttribute("user",user);
+            String apiUrl = "http://localhost:5000/api/recommendations?user_id="+user.getId();
+            RestTemplate restTemplate = new RestTemplate();
+            try {
+                Map response = restTemplate.getForObject(apiUrl,Map.class);
+                if (response != null && "success".equals(response.get("status"))) {
+                    List<Map<String, Object>> recommendations = (List<Map<String, Object>>) response.get("recommendations");
+                    // Extract package IDs from the recommendations
+                    List<Long> packageIds = recommendations.stream()
+                            .map(rec -> Long.valueOf(rec.get("id").toString()))
+                            .toList();
+                    List<Package> recommendedPackages = packService.findAllById(packageIds);
+                    String recommendedPackagesJson = mapper.writeValueAsString(recommendedPackages);
+                    model.addAttribute("packages", recommendedPackagesJson);
+                }
+                System.out.println(response);
+                System.out.println("Success");
+            }catch (Exception e){
+                System.out.println("ERROR IN TRAINING");
+            }
             return "home";
+        }else{
+            String topPackagesJson = mapper.writeValueAsString(packService.toppackages());
+            model.addAttribute("packages",topPackagesJson);
         }
         return "home";
     }
@@ -124,7 +156,7 @@ public class MainController {
                 return "booking";
             }
             return "booking";
-        }else return "login";
+        }else return "redirect:/login";
     }
 
     @PostMapping("/packBook")
@@ -219,5 +251,7 @@ public class MainController {
         response.addCookie(logoutCookie);
         return "redirect:/";
     }
+
+
 
 }
