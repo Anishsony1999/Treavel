@@ -116,10 +116,10 @@ public class MainController {
         }else return "redirect:login";
     }
 
-    @PutMapping("/updateHotel/{id}") //do some change
+    @PostMapping("/updateHotel/{id}")
     public String updateHotel(@ModelAttribute HotelDto hotelDto, @RequestParam("image")MultipartFile image,@PathVariable("id") int id) throws IOException {
         hotelService.updateHotel(id,hotelDto);
-        return "redirect:admin-home";
+        return "hotels";
     }
 
     @GetMapping("/addpackage")
@@ -139,7 +139,7 @@ public class MainController {
     @PutMapping("/updatePackage/{id}")
     public String updatePackage(@ModelAttribute PackageDto packageDto,@RequestParam("image") MultipartFile image,@PathVariable("id") int id) throws IOException {
         packService.updatePackage(id,packageDto);
-        return "redirect:admin-home";
+        return "packages";
     }
 
 
@@ -264,7 +264,8 @@ public class MainController {
     public String getHotelById(@PathVariable int id , Model model) {
         HotelDto hotelDto = hotelService.getHotelById(id);
         model.addAttribute("hotelDto",hotelDto);
-        model.addAttribute("isEdit", false);
+        model.addAttribute("isEdit", true);
+        model.addAttribute("hotelId",hotelService.findHotelById(id).getId());
         return "add-hotel";
     }
 

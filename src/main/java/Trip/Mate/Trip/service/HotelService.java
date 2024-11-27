@@ -103,4 +103,8 @@ public class HotelService {
     public Hotel findHotelByName(String hotel) {
         return  hotelRepo.findByHotelName(hotel);
     }
+
+    public Hotel findHotelById(int id){
+        return hotelRepo.findById(id).orElseThrow(()->new RuntimeException("Hotel not Fount"));
+    }
 }

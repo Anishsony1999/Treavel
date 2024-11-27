@@ -85,7 +85,7 @@
                 <h1 class="h2">Add New Hotel</h1>
             </div>
 
-            <form class="needs-validation" novalidate th:action="${edit} ? @{'/update/'+ ${hotelDto.id}@{/addHotel}" method="post" th:object="${hotelDto}" enctype="multipart/form-data">
+            <form class="needs-validation" novalidate th:action="${isEdit} ? @{'/updateHotel/'+ ${hotelId}} : @{/addHotel}" th:method="${isEdit} ? 'put' : 'post'" th:object="${hotelDto}" enctype="multipart/form-data">
                 <div class="row g-3">
                     <div class="col-12">
                         <label for="hotelName" class="form-label">Hotel Name</label>
@@ -146,7 +146,7 @@
 
                     <div class="col-12">
                         <label for="hotelImage" class="form-label">Hotel Image</label>
-                        <input type="file" class="form-control" name="image" id="hotelImage" accept="image/*" required>
+                        <input type="file" class="form-control" name="image" id="hotelImage" accept="image/*" >
                         <div class="invalid-feedback">
                             Please select an image for the hotel.
                         </div>

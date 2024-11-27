@@ -107,7 +107,7 @@
                         <td th:text="${pack.night}"></td>
                         <td th:text="${pack.pricePerPerson}"></td>
                         <td>
-                            <a th:href="@{'/package/' + ${pack.id}}" class="btn btn-sm btn-warning">Edit</a>
+                            <a th:href="@{'/updatePackage/' + ${pack.id}}" class="btn btn-sm btn-warning">Edit</a>
                         </td>
                         <td>
                             <a th:href="@{'api/package/' + ${pack.id}}" class="btn btn-sm btn-danger">Delete</a>
