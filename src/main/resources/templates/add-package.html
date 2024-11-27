@@ -85,11 +85,11 @@
                 <h1 class="h2">Add New Package</h1>
             </div>
 
-            <form th:action="@{/addpackage}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <form th:action="${isEdit} ? @{'/updatePackage/'+ ${packId}} :@{/addpackage}" th:object="${pack}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
                 <div class="row g-3">
                     <div class="col-12">
                         <label for="packName" class="form-label">Package Name</label>
-                        <input type="text" class="form-control" id="packName" name="packName" required>
+                        <input type="text" class="form-control" id="packName" name="packName" th:field="*{packName}" required>
                         <div class="invalid-feedback">
                             Please enter the package name.
                         </div>
@@ -97,7 +97,7 @@
 
                     <div class="col-12">
                         <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                        <textarea class="form-control" id="description" name="description" rows="3" th:field="*{description}" required></textarea>
                         <div class="invalid-feedback">
                             Please enter a description for the package.
                         </div>
@@ -105,7 +105,7 @@
 
                     <div class="col-md-4">
                         <label for="city" class="form-label">City</label>
-                        <input type="text" class="form-control" id="city" name="city" required>
+                        <input type="text" class="form-control" id="city" name="city" required th:field="*{city}">
                         <div class="invalid-feedback">
                             Please enter the city.
                         </div>
@@ -113,7 +113,7 @@
 
                     <div class="col-md-4">
                         <label for="state" class="form-label">State</label>
-                        <input type="text" class="form-control" id="state" name="state" required>
+                        <input type="text" class="form-control" id="state" name="state" required th:field="*{state}">
                         <div class="invalid-feedback">
                             Please enter the state.
                         </div>
@@ -121,7 +121,7 @@
 
                     <div class="col-md-4">
                         <label for="state" class="form-label">Country</label>
-                        <input type="text" class="form-control" id="country" name="country" required>
+                        <input type="text" class="form-control" id="country" name="country" required th:field="*{country}">
                         <div class="invalid-feedback">
                             Please enter the country.
                         </div>
@@ -129,7 +129,7 @@
 
                     <div class="col-md-4">
                         <label for="days" class="form-label">Number of Days</label>
-                        <input type="number" class="form-control" id="days" name="days" required min="1">
+                        <input type="number" class="form-control" id="days" name="days" required min="1" th:field="*{days}">
                         <div class="invalid-feedback">
                             Please enter a valid number of days.
                         </div>
@@ -137,7 +137,7 @@
 
                     <div class="col-md-4">
                         <label for="night" class="form-label">Number of Nights</label>
-                        <input type="number" class="form-control" id="night" name="night" required min="0">
+                        <input type="number" class="form-control" id="night" name="night" required min="0" th:field="*{night}">
                         <div class="invalid-feedback">
                             Please enter a valid number of nights.
                         </div>
@@ -147,7 +147,7 @@
                         <label for="pricePerPerson" class="form-label">Price Per Person</label>
                         <div class="input-group">
                             <span class="input-group-text">$</span>
-                            <input type="number" class="form-control" id="pricePerPerson" name="pricePerPerson" required min="0" step="0.01">
+                            <input type="number" class="form-control" id="pricePerPerson" name="pricePerPerson" required min="0" step="0.01" th:field="*{pricePerPerson}">
                         </div>
                         <div class="invalid-feedback">
                             Please enter a valid price per person.
@@ -156,7 +156,7 @@
 
                     <div class="col-12">
                         <label for="image" class="form-label">Package Image</label>
-                        <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+                        <input type="file" class="form-control" id="image" name="image" accept="image/*" >
                         <div class="invalid-feedback">
                             Please select an image for the package.
                         </div>

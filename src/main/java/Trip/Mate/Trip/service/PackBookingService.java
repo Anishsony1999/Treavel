@@ -29,7 +29,7 @@ public class PackBookingService {
     }
 
     public PackBooking bookingById(int id){
-        return packBooking.findById(id).orElseThrow( ()-> new RuntimeException("Booking not fount"));
+        return packBooking.findById(id).orElseThrow( ()-> new RuntimeException("Booking not found"));
     }
 
 }

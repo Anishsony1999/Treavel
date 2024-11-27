@@ -105,6 +105,6 @@ public class HotelService {
     }
 
     public Hotel findHotelById(int id){
-        return hotelRepo.findById(id).orElseThrow(()->new RuntimeException("Hotel not Fount"));
+        return hotelRepo.findById(id).orElseThrow(()->new RuntimeException("Hotel not Found"));
     }
 }

@@ -13,11 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -69,15 +65,39 @@ public class PackService {
         }
     }
 
+    public PackageDto packByIds(Long id){
+        Package pack =packRepo.findById(id).orElseThrow(()-> new RuntimeException("pack Not Find"));
+        if(pack != null) System.out.println("pack found");
+        PackageDto packageDto = new PackageDto();
+
+        packageDto.setPackName(pack.getPackName());
+        packageDto.setDescription(pack.getDescription());
+        packageDto.setCity(pack.getCity());
+        packageDto.setState(pack.getState());
+        packageDto.setCountry(pack.getCountry());
+        packageDto.setDays(pack.getDays());
+        packageDto.setNight(pack.getNight());
+        packageDto.setPricePerPerson(pack.getPricePerPerson().doubleValue());
+        packageDto.setImage(null);
+
+        return packageDto;
+    }
+
     public List<Package> allPack(){
         return packRepo.findAll();
     }
     public List<Package> findAllById(List<Long> ids){
         return packRepo.findAllById(ids);
     }
+
+    public Package findById(Long id){
+        return packRepo.findById(id).orElseThrow(() -> new RuntimeException("Pack Not Found"));
+    }
+
     public List<Package> toppackages(){
         return packRepo.findTop3ByOrderByIdAsc();
     }
+
     public Package packById(long id){
         return packRepo.findById(id).orElseThrow(()-> new RuntimeException("Pack Not Found"));
     }
@@ -127,7 +147,7 @@ public class PackService {
 
     public BigDecimal getCurrency(String country,BigDecimal amount) throws IOException {
 
-        country = "USD";
+        country = "USD"; //static
         String apiUrl = url + key + "/latest/INR";
         RestTemplate restTemplate = new RestTemplate();
         try {

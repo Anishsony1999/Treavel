@@ -86,7 +86,7 @@ public class MainController {
         }
         User user = userService.verifyUser(email, pass,response);
         if(user != null) return "redirect:/";
-        model.addAttribute("error","User Not fount");
+        model.addAttribute("error","User Not found");
         return "login";
     }
 
@@ -122,6 +122,12 @@ public class MainController {
         return "hotels";
     }
 
+    @PostMapping("/updatePackage/{id}")
+    public String updatePack(@ModelAttribute PackageDto packDto, @RequestParam("image")MultipartFile image,@PathVariable("id") int id) throws IOException {
+        packService.updatePackage(id,packDto);
+        return "redirect:/packageList";
+    }
+
     @GetMapping("/addpackage")
     public String pack(@CookieValue(value = "role",required = true) String role,Model model){
         if (role.equals("admin")) {
@@ -136,10 +142,12 @@ public class MainController {
         return "redirect:admin-home";
     }
 
-    @PutMapping("/updatePackage/{id}")
-    public String updatePackage(@ModelAttribute PackageDto packageDto,@RequestParam("image") MultipartFile image,@PathVariable("id") int id) throws IOException {
-        packService.updatePackage(id,packageDto);
-        return "packages";
+    @GetMapping("/updatePackage/{id}")
+    public String updatePackage(@PathVariable("id") long id,Model model) throws IOException {
+        model.addAttribute("pack",packService.packByIds(id));
+        model.addAttribute("packId",packService.findById(id).getId());
+        model.addAttribute("isEdit",true);
+        return "add-package";
     }
 
 
@@ -268,6 +276,7 @@ public class MainController {
         model.addAttribute("hotelId",hotelService.findHotelById(id).getId());
         return "add-hotel";
     }
+
 
     @GetMapping("/logout")
     public String logout(HttpServletResponse response){
