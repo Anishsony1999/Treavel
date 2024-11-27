@@ -53,7 +53,10 @@ public class HotelService {
         return hotelRepo.findAll();
     }
 
-    public HotelDto getHotelById(int id) {
+    public Hotel getHotelById(int id) {
+        return hotelRepo.findById(id).orElse(null);
+    }
+    public HotelDto getHotelByIds(int id) {
         Hotel hotel = hotelRepo.findById(id).orElse(null);
 
         HotelDto hotelDto = new HotelDto();

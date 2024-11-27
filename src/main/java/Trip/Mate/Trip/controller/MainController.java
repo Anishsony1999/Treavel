@@ -270,7 +270,7 @@ public class MainController {
 
     @GetMapping("hotels/{id}")
     public String getHotelById(@PathVariable int id , Model model) {
-        HotelDto hotelDto = hotelService.getHotelById(id);
+        HotelDto hotelDto = hotelService.getHotelByIds(id);
         model.addAttribute("hotelDto",hotelDto);
         model.addAttribute("isEdit", true);
         model.addAttribute("hotelId",hotelService.findHotelById(id).getId());
@@ -281,6 +281,18 @@ public class MainController {
     public String memories(Model model){
         model.addAttribute("memories",memoryService.getMemories());
         return "memories";
+    }
+
+    @GetMapping("pack")
+    public String packs(Model model){
+        model.addAttribute("packages",packService.allPack());
+        return "all-pack";
+    }
+
+    @GetMapping("hotel")
+    public String hotels(Model model){
+        model.addAttribute("hotels",hotelService.getAllHotels());
+        return "all-hotels";
     }
 
     @GetMapping("/logout")

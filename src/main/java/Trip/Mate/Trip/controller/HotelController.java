@@ -6,7 +6,6 @@ import Trip.Mate.Trip.service.HotelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -40,11 +39,9 @@ public class HotelController {
 
     // Get hotel by ID
     @GetMapping("/{id}")
-    public String getHotelById(@PathVariable int id , Model model) {
-        HotelDto hotelDto = hotelService.getHotelById(id);
-        model.addAttribute("hotelDto",hotelDto);
-        model.addAttribute("isEdit", false);
-        return "add-hotel";
+    public ResponseEntity<Hotel> getHotelById(@PathVariable int id) {
+        Optional<Hotel> hotel = Optional.ofNullable(hotelService.getHotelById(id));
+        return hotel.map(ResponseEntity::ok).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
 
