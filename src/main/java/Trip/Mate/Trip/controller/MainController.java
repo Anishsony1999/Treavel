@@ -174,7 +174,7 @@ public class MainController {
             model.addAttribute("memories",memoryService.getMemoriesByPackId(id));
             model.addAttribute("hotels",hotelService.searchHotels(pack.getCity(),pack.getPackName()));
             if(!pack.getCountry().equals("india")){
-                BigDecimal currency = packService.getCurrency(pack.getCountry(),pack.getPricePerPerson());
+                Double currency = packService.getCurrency(pack.getCountry());
                 model.addAttribute("currency",currency);
                 return "booking";
             }

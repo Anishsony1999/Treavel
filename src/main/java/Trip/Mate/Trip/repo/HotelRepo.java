@@ -17,4 +17,5 @@ public interface HotelRepo extends JpaRepository<Hotel,Integer> {
     );
     Hotel findByHotelName(String hotel);
     List<Hotel> findTop3ByOrderByIdAsc();
+
 }

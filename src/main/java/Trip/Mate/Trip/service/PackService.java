@@ -145,7 +145,7 @@ public class PackService {
         return packRepo.findByCityOrPackNameAndDaysInRange(place,name,start,end);
     }
 
-    public BigDecimal getCurrency(String country,BigDecimal amount) throws IOException {
+    public Double getCurrency(String country) throws IOException {
 
         country = "USD"; //static
         String apiUrl = url + key + "/latest/INR";
@@ -161,7 +161,7 @@ public class PackService {
                 Double rate = rates.get(country.toUpperCase());
 
                 if (rate != null) {
-                    return amount.multiply(BigDecimal.valueOf(rate));
+                    return rate;
                 } else {
                     throw new IllegalArgumentException("Currency conversion rate not found for: " + country);
                 }
