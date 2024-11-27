@@ -69,4 +69,8 @@ public class MemoryService {
     public List<Memories> getMemoriesByPackId(int id) {
         return memoryRepo.findByPackId(id);
     }
+
+    public List<Memories> getMemories() {
+        return memoryRepo.findAll();
+    }
 }

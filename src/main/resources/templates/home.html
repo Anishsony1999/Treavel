@@ -80,6 +80,9 @@
                     <a class="nav-link text-success" href="/register">register</a>
                 </li>
                 <li class="nav-item " th:if="${user != null}">
+                    <a class="nav-link " href="/memories">Memories</a>
+                </li>
+                <li class="nav-item " th:if="${user != null}">
                     <a class="nav-link text-danger" href="/logout">Log Out</a>
                 </li>
                 <li class="nav-item " th:if="${user == null}">
@@ -94,7 +97,7 @@
     <div class="container">
         <h1>Welcome to Trip Mate</h1>
         <p class="lead">Discover amazing destinations and book your dream vacation today!</p>
-        
+
     </div>
 </header>
 
@@ -131,7 +134,7 @@
             </div>
         </div>
     </section>
-    
+
     <section id="packages" class="mb-5">
         <div class="search-box mt-4 mb-3">
             <div class="row g-3">
@@ -302,7 +305,7 @@ function searchPackages() {
         .then(data => {
             console.log("Packages data fetched:", data);
             if (data && data.length > 0) {
-                displayPackages(data); 
+                displayPackages(data);
             } else {
                 packagesContainer.innerHTML = `
                     <div class="col-12 text-center text-muted">
@@ -332,7 +335,7 @@ function searchPackages() {
         .then(data => {
             console.log("Hotels data fetched:", data);
             if (data && data.length > 0) {
-                displayHotels(data); 
+                displayHotels(data);
             } else {
                 hotelsContainer.innerHTML = `
                     <div class="col-12 text-center text-muted">

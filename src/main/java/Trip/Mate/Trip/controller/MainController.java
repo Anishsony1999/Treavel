@@ -277,6 +277,11 @@ public class MainController {
         return "add-hotel";
     }
 
+    @GetMapping("memories")
+    public String memories(Model model){
+        model.addAttribute("memories",memoryService.getMemories());
+        return "memories";
+    }
 
     @GetMapping("/logout")
     public String logout(HttpServletResponse response){
@@ -286,7 +291,5 @@ public class MainController {
         response.addCookie(logoutCookie);
         return "redirect:/";
     }
-
-
 
 }
