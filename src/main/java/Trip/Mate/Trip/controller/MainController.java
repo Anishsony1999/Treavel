@@ -53,17 +53,29 @@ public class MainController {
                 if (response != null && "success".equals(response.get("status"))) {
                     List<Map<String, Object>> recommendations = (List<Map<String, Object>>) response.get("recommendations");
                     // Extract package IDs from the recommendations
+
+                    System.out.println(recommendations);
                     List<Long> packageIds = recommendations.stream()
                             .map(rec -> Long.valueOf(rec.get("id").toString()))
                             .toList();
-                    List<Package> recommendedPackages = packService.findAllById(packageIds);
-                    String recommendedPackagesJson = mapper.writeValueAsString(recommendedPackages);
-                    model.addAttribute("packages", recommendedPackagesJson);
+                    if(packageIds.isEmpty()){
+                        String topPackagesJson = mapper.writeValueAsString(packService.toppackages());
+                        model.addAttribute("packages",topPackagesJson);
+                    }else{
+                        List<Package> recommendedPackages = packService.findAllById(packageIds);
+                        String recommendedPackagesJson = mapper.writeValueAsString(recommendedPackages);
+                        model.addAttribute("packages", recommendedPackagesJson);
+                    }
+
                 }
                 System.out.println(response);
                 System.out.println("Success");
             }catch (Exception e){
+                System.out.println(e);
                 System.out.println("ERROR IN TRAINING");
+                String topPackagesJson = mapper.writeValueAsString(packService.toppackages());
+                model.addAttribute("packages",topPackagesJson);
+                return "home";
             }
             return "home";
         }else{
@@ -85,8 +97,8 @@ public class MainController {
             return "redirect:admin-home";
         }
         User user = userService.verifyUser(email, pass,response);
-        if(user != null) return "redirect:/";
-        model.addAttribute("error","User Not found");
+        if(user != null) return "redirect:/pack";
+        model.addAttribute("error","Check your credentials");
         return "login";
     }
 
@@ -205,11 +217,15 @@ public class MainController {
         packBooking.setUser(user);
         packBooking.setUserCount(count);
         packBooking.setAmount((packageToBook.getPricePerPerson().multiply(BigDecimal.valueOf(count))));
-        packBooking.setHotel(hotelService.findHotelByName(hotel));
+        packBooking.setHotel(hotelService.findHotelById(Integer.parseInt(hotel)));
         packBooking.setBookingDate(date);
 
         bookingService.savePack(packBooking);
-
+        try {
+            Thread.sleep(5000); // 5000 milliseconds = 5 seconds
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return "redirect:/";
     }
 

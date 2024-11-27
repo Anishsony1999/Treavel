@@ -158,7 +158,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="travelDate" class="form-label">Travel Date</label>
-                                <input type="date" class="form-control" id="travelDate" name="travelDate" required>
+                                <input type="date" class="form-control" id="travelDate" name="travelDate" required onfocus="this.min=new Date().toISOString().split('T')[0]" >
                             </div>
                             <div class="mb-3">
                                 <label for="hotelName" class="form-label">Select Hotel</label>

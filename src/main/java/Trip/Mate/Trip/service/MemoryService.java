@@ -31,7 +31,7 @@ public class MemoryService {
                      PackBooking packBooking) throws IOException {
 
         // Construct directory paths
-        String relativePath = "memoryImages" + File.separator + user.getFirstName() + File.separator + pack.getPackName();
+        String relativePath = "memoryImages";
         Path absolutePath = Path.of(rootLocation, relativePath);
 
         try {
