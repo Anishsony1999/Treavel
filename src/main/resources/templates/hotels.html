@@ -96,6 +96,8 @@
                         <th>Food Cost</th>
                         <th>AC Room Cost</th>
                         <th>Room Cost</th>
+                        <th>Edit </th>
+                        <th>Delete</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -105,6 +107,13 @@
                         <td th:text="${hotel.foodCost}"></td>
                         <td th:text="${hotel.acRoomCost}"></td>
                         <td th:text="${hotel.roomCost}"></td>
+                        <td>
+                            <a th:href="@{'/hotels/' + ${hotel.id}}" class="btn btn-sm btn-warning">Edit</a>
+                        </td>
+                        <td>
+                            <a th:href="@{'api/hotels/' + ${hotel.id}}" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+
                     </tr>
                     </tbody>
                 </table>

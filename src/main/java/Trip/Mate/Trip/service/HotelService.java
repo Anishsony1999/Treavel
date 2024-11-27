@@ -53,9 +53,17 @@ public class HotelService {
         return hotelRepo.findAll();
     }
 
-    public Hotel getHotelById(int id) {
-        return hotelRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Hotel with ID " + id + " not found"));
+    public HotelDto getHotelById(int id) {
+        Hotel hotel = hotelRepo.findById(id).orElse(null);
+
+        HotelDto hotelDto = new HotelDto();
+        hotelDto.setHotelName(hotel.getHotelName());
+        hotelDto.setCity(hotel.getCity());
+        hotelDto.setState(hotel.getState());
+        hotelDto.setFoodCost(hotel.getFoodCost().doubleValue());
+        hotelDto.setAcRoomCost(hotel.getAcRoomCost().doubleValue());
+        hotelDto.setRoomCost(hotel.getRoomCost().doubleValue());
+        return hotelDto;
     }
 
     public Hotel updateHotel(int id, HotelDto hotelDto) throws IOException {

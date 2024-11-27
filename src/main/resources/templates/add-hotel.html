@@ -85,7 +85,7 @@
                 <h1 class="h2">Add New Hotel</h1>
             </div>
 
-            <form class="needs-validation" novalidate th:action="@{/addHotel}" method="post" th:object="${hotelDto}" enctype="multipart/form-data">
+            <form class="needs-validation" novalidate th:action="${edit} ? @{'/update/'+ ${hotelDto.id}@{/addHotel}" method="post" th:object="${hotelDto}" enctype="multipart/form-data">
                 <div class="row g-3">
                     <div class="col-12">
                         <label for="hotelName" class="form-label">Hotel Name</label>

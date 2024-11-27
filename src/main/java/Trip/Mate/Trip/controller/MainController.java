@@ -45,6 +45,7 @@ public class MainController {
         if(email !=null){
             User user = userService.getUserByEmail(email);
             model.addAttribute("user",user);
+
             String apiUrl = "http://localhost:5000/api/recommendations?user_id="+user.getId();
             RestTemplate restTemplate = new RestTemplate();
             try {
@@ -78,14 +79,15 @@ public class MainController {
     }
 
     @PostMapping("/login")
-    public String UserLogin(@RequestParam("username") String email, @RequestParam("password") String pass, HttpServletResponse response){
+    public String UserLogin(@RequestParam("username") String email, @RequestParam("password") String pass, HttpServletResponse response,Model model){
         if(email.equals("admin") && pass.equals("admin@123")){
             userService.admin(response);
             return "redirect:admin-home";
         }
         User user = userService.verifyUser(email, pass,response);
         if(user != null) return "redirect:/";
-        return "redirect:register";
+        model.addAttribute("error","User Not fount");
+        return "login";
     }
 
     @GetMapping("/register")
@@ -114,6 +116,12 @@ public class MainController {
         }else return "redirect:login";
     }
 
+    @PutMapping("/updateHotel/{id}") //do some change
+    public String updateHotel(@ModelAttribute HotelDto hotelDto, @RequestParam("image")MultipartFile image,@PathVariable("id") int id) throws IOException {
+        hotelService.updateHotel(id,hotelDto);
+        return "redirect:admin-home";
+    }
+
     @GetMapping("/addpackage")
     public String pack(@CookieValue(value = "role",required = true) String role,Model model){
         if (role.equals("admin")) {
@@ -127,6 +135,13 @@ public class MainController {
         packService.addPackImage(packageDto);
         return "redirect:admin-home";
     }
+
+    @PutMapping("/updatePackage/{id}")
+    public String updatePackage(@ModelAttribute PackageDto packageDto,@RequestParam("image") MultipartFile image,@PathVariable("id") int id) throws IOException {
+        packService.updatePackage(id,packageDto);
+        return "redirect:admin-home";
+    }
+
 
     @GetMapping("/admin-home")
     public String adminPage(@CookieValue(value = "role",required = false) String role,Model model){
@@ -243,6 +258,14 @@ public class MainController {
                 bookingService.bookingById(id)
         );
         return "redirect:/";
+    }
+
+    @GetMapping("hotels/{id}")
+    public String getHotelById(@PathVariable int id , Model model) {
+        HotelDto hotelDto = hotelService.getHotelById(id);
+        model.addAttribute("hotelDto",hotelDto);
+        model.addAttribute("isEdit", false);
+        return "add-hotel";
     }
 
     @GetMapping("/logout")

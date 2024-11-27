@@ -95,6 +95,8 @@
                         <th>Days</th>
                         <th>Nights</th>
                         <th>Price</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -104,7 +106,12 @@
                         <td th:text="${pack.days}"></td>
                         <td th:text="${pack.night}"></td>
                         <td th:text="${pack.pricePerPerson}"></td>
-
+                        <td>
+                            <a th:href="@{'/package/' + ${pack.id}}" class="btn btn-sm btn-warning">Edit</a>
+                        </td>
+                        <td>
+                            <a th:href="@{'api/package/' + ${pack.id}}" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
